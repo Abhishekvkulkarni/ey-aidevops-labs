@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+lab2/.pr_base
+lab2/ai_findings.json

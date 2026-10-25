@@ -1,0 +1,5 @@
+# The worker image is pre-built and shared. Trainer: replace the registry name below before handing out the repo.
+worker:
+  image:
+    repository: REPLACE_WITH_SHARED_ACR.azurecr.io/shared/shipwave-worker
+    tag: "1.0"

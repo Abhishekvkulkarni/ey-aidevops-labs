@@ -1,0 +1,60 @@
+{
+  "SchemaVersion": 2,
+  "ArtifactName": ".",
+  "ArtifactType": "filesystem",
+  "Results": [
+    {
+      "Target": "api/app/config.py",
+      "Class": "secret",
+      "Secrets": [
+        {
+          "RuleID": "github-pat",
+          "Category": "GitHub",
+          "Severity": "CRITICAL",
+          "Title": "GitHub Personal Access Token",
+          "StartLine": 7,
+          "EndLine": 7,
+          "Match": "NOTIFY_TOKEN = \"********************************************\""
+        }
+      ]
+    },
+    {
+      "Target": "deploy/debug-tools.yaml",
+      "Class": "config",
+      "Type": "kubernetes",
+      "MisconfSummary": {
+        "Successes": 10,
+        "Failures": 2,
+        "Exceptions": 0
+      },
+      "Misconfigurations": [
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV017",
+          "AVDID": "AVD-KSV-0017",
+          "Title": "Privileged",
+          "Severity": "HIGH",
+          "Status": "FAIL",
+          "Message": "Container 'debug' of Pod 'shipwave-debug' should set 'securityContext.privileged' to false",
+          "CauseMetadata": {
+            "StartLine": 11,
+            "EndLine": 11
+          }
+        },
+        {
+          "Type": "Kubernetes Security Check",
+          "ID": "KSV012",
+          "AVDID": "AVD-KSV-0012",
+          "Title": "Runs as root user",
+          "Severity": "MEDIUM",
+          "Status": "FAIL",
+          "Message": "Container 'debug' of Pod 'shipwave-debug' should set 'securityContext.runAsNonRoot' to true",
+          "CauseMetadata": {
+            "StartLine": 11,
+            "EndLine": 12
+          }
+        }
+      ]
+    }
+  ]
+}

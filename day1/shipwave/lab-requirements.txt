@@ -1,0 +1,6 @@
+# Python packages for the Day 1 labs (install once: pip install -r lab-requirements.txt)
+-r api/requirements.txt
+httpx==0.27.2
+pytest==8.3.4
+pytest-cov==6.0.0
+ruff==0.8.4

@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI review vs scanner</title>
+<style>:root{
+  --bg:#f6f6f4; --card:#ffffff; --ink:#1f1f26; --muted:#5b5b66; --line:#dcdcd6;
+  --accent:#ffe600; --accent-ink:#2e2e38; --head:#2e2e38; --head-ink:#ffffff;
+  --ok:#1b7f3b; --okbg:#e6f5ea; --bad:#b3261e; --badbg:#fdeceb; --warn:#8a5a00; --warnbg:#fff4d6;
+  --code:#14141a; --codeink:#e8e8ee; --link:#1a56c4;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#17171c; --card:#22222a; --ink:#ececf1; --muted:#a2a2ae; --line:#3a3a46;
+    --okbg:#143323; --badbg:#3a1a18; --warnbg:#3a2e10; --ok:#5fd085; --bad:#ff8a80; --warn:#ffd27a; --link:#8ab4ff;}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+a{color:var(--link)}
+header.top{background:var(--head);color:var(--head-ink);padding:22px 20px 18px;border-bottom:6px solid var(--accent)}
+header.top .wrap{max-width:900px;margin:0 auto}
+header.top .kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+header.top h1{margin:4px 0 6px;font-size:28px;line-height:1.25}
+header.top p{margin:0;color:#d6d6de}
+nav.bar{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line)}
+nav.bar .wrap{max-width:900px;margin:0 auto;padding:8px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+nav.bar a{font-size:14px;text-decoration:none;color:var(--ink);padding:2px 0;border-bottom:2px solid transparent}
+nav.bar a:hover{border-bottom-color:var(--accent)}
+.pbar{flex:1;min-width:120px;height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.pct{font-size:13px;color:var(--muted);min-width:38px;text-align:right}
+main{max-width:900px;margin:0 auto;padding:18px 20px 80px}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 22px;margin:18px 0}
+section>h2{margin:0 0 4px;font-size:21px}
+.badge{display:inline-block;font-size:12px;font-weight:600;background:var(--accent);color:var(--accent-ink);padding:2px 9px;border-radius:99px;margin-left:8px;vertical-align:middle}
+.sub{color:var(--muted);margin:0 0 12px;font-size:14px}
+h3{font-size:17px;margin:18px 0 6px}
+code{font-family:Consolas,"Cascadia Mono",Menlo,monospace;font-size:.92em;background:rgba(127,127,127,.16);padding:1px 5px;border-radius:4px}
+pre{font-family:Consolas,"Cascadia Mono",Menlo,monospace;font-size:14px;background:var(--code);color:var(--codeink);padding:12px 14px;border-radius:8px;overflow:auto;margin:8px 0;line-height:1.5}
+pre code{background:none;padding:0;color:inherit}
+.cmdwrap{position:relative}
+.cmdwrap button.copy{position:absolute;top:6px;right:6px;font-size:12px;padding:3px 9px;border:1px solid #555;background:#2b2b35;color:#ddd;border-radius:5px;cursor:pointer}
+.cmdwrap button.copy:hover{background:#3b3b48}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:rgba(127,127,127,.12)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.two{grid-template-columns:1fr}}
+.panel{border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.panel h4{margin:0 0 6px;font-size:15px}
+.panel.a{border-left:5px solid #c9a100}.panel.b{border-left:5px solid var(--ok)}
+.step{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px dashed var(--line)}
+.step:first-of-type{border-top:0}
+.step input{margin-top:5px;width:18px;height:18px;flex:none}
+.step .body{flex:1;min-width:0}
+.step.done .body>strong{text-decoration:line-through;color:var(--muted)}
+.checkpoint{background:var(--warnbg);color:var(--warn);border:1px solid var(--warn);border-radius:8px;padding:10px 14px;margin:14px 0;font-weight:600}
+.note{background:rgba(127,127,127,.1);border-left:4px solid var(--accent);padding:8px 12px;border-radius:0 6px 6px 0;margin:10px 0;font-size:15px}
+.chk{border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0}
+.chk h3{margin:0 0 2px}
+.chk .pts{font-size:12px;color:var(--muted);font-weight:400}
+.chk textarea{width:100%;min-height:110px;font:13px/1.4 Consolas,"Cascadia Mono",Menlo,monospace;background:var(--code);color:var(--codeink);border:1px solid var(--line);border-radius:6px;padding:8px;resize:vertical}
+button.btn{font:600 14px system-ui,sans-serif;padding:7px 14px;border-radius:6px;border:1px solid var(--accent-ink);background:var(--accent);color:var(--accent-ink);cursor:pointer;margin:6px 8px 0 0}
+button.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+button.btn:hover{filter:brightness(.95)}
+.res{margin-top:8px;padding:8px 12px;border-radius:6px;font-size:14.5px;display:none}
+.res.ok{display:block;background:var(--okbg);color:var(--ok)}
+.res.bad{display:block;background:var(--badbg);color:var(--bad)}
+.res.part{display:block;background:var(--warnbg);color:var(--warn)}
+.q{margin:14px 0;padding:10px 14px;border:1px solid var(--line);border-radius:8px}
+.q p{margin:0 0 6px;font-weight:600}
+.q label{display:block;padding:3px 0;cursor:pointer}
+.q .why{display:none;margin-top:6px;font-size:14.5px;padding:6px 10px;border-radius:6px}
+.q.right .why{display:block;background:var(--okbg);color:var(--ok)}
+.q.wrong .why{display:block;background:var(--badbg);color:var(--bad)}
+.summary textarea{width:100%;min-height:170px;font:13px/1.45 Consolas,"Cascadia Mono",Menlo,monospace;background:var(--code);color:var(--codeink);border:1px solid var(--line);border-radius:6px;padding:10px}
+.who{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.who input{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);width:120px}
+.big{font-size:30px;font-weight:700}
+.derive{margin:10px 0;padding:10px 14px;border:1px dashed var(--line);border-radius:8px}
+footer{max-width:900px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;color:var(--ink);display:block}
+.card:hover{border-color:var(--accent-ink);box-shadow:0 2px 0 var(--accent)}
+.card b{display:block;font-size:18px;margin:2px 0}
+.card small{color:var(--muted)}
+</style></head>
+<body>
+<header class="top"><div class="wrap">
+<div class="kicker">EY &middot; AI for DevOps &middot; Day 1 &middot; Block 3</div>
+<h1>AI review vs scanner</h1><p>Two reviewers, one seeded PR. Who catches what?</p></div></header>
+<nav class="bar"><div class="wrap">
+<a href="index.html">Day 1 home</a><a href="#concept">Concept</a><a href="#guided">Guided lab</a><a href="#solo">Solo</a><a href="#check">Check</a><a href="#debrief">Quiz</a><a href="#result">Result</a>
+<div class="pbar"><i></i></div><span class="pct">0%</span></div></nav>
+<main>
+<section><div class="who"><b>Your id</b> <input id="who-name" placeholder="u07" aria-label="Your participant id"> <span class="sub" style="margin:0">Your progress is saved in this browser.</span></div></section>
+<section id="concept">
+  <h2>1. Concept <span class="badge">10 min · trainer (Anil) leads</span></h2>
+  <p class="sub">A pull request lands. Two reviewers look at it: a scanner and an AI. Who catches what?</p>
+  <div class="two">
+    <div class="panel b">
+      <h4>Scanner (Trivy)</h4>
+      <p>Fast, repeatable, rule-based. Strong on known patterns such as leaked secrets and risky infrastructure settings.</p>
+    </div>
+    <div class="panel a">
+      <h4>AI reviewer</h4>
+      <p>Reads the code like a person. Can follow logic and context, but varies between runs and sometimes invents problems.</p>
+    </div>
+  </div>
+  <div class="note"><b>How we score.</b> The PR has <b>5 planted issues</b>. You get <b>20 points</b> for each one found by any tool, and <b>minus 5</b> for each false positive. Matching is by file and category, so be precise about both.</div>
+</section>
+
+<section id="guided">
+  <h2>2. Guided lab <span class="badge">25 min · follow along</span></h2>
+  <p class="sub">Goal: review the seeded PR with the scanner and with the AI, and score each.</p>
+
+  <div class="step"><input type="checkbox" data-step="g1"><div class="body"><strong>Load the seeded PR</strong>
+    <pre class="cmd">python lab2/apply_pr.py</pre>
+    This puts the PR changes on a local branch. <b>Do not push this branch to GitHub.</b> It contains a fake token on purpose and GitHub will block the push.</div></div>
+
+  <div class="step"><input type="checkbox" data-step="g2"><div class="body"><strong>Run the scanner</strong>
+    <pre class="cmd">trivy fs --scanners secret,misconfig --format json -o lab2/trivy.json .</pre></div></div>
+
+  <div class="step"><input type="checkbox" data-step="g3"><div class="body"><strong>Score the scanner</strong>
+    <pre class="cmd">python lab2/score.py</pre>
+    Paste into <b>Score after the Trivy scan</b>.</div></div>
+
+  <div class="checkpoint">Checkpoint: everyone has a Trivy score. Wait for the trainer (Anil).</div>
+
+  <div class="step"><input type="checkbox" data-step="g4"><div class="body"><strong>Run the AI reviewer</strong>
+    <pre class="cmd">python lab2/ai_review.py</pre></div></div>
+
+  <div class="step"><input type="checkbox" data-step="g5"><div class="body"><strong>Score again</strong>
+    <pre class="cmd">python lab2/score.py</pre>
+    Paste into <b>Score after the AI review (with context)</b>. Before you move on, open each AI finding and check the file and line yourself: is it real?</div></div>
+</section>
+
+<section id="solo">
+  <h2>3. Solo challenge <span class="badge">30 min · you work alone</span></h2>
+  <p class="sub">Make the AI reviewer better by treating its prompt as a spec, and prove it with the score.</p>
+
+  <div class="step"><input type="checkbox" data-step="s1"><div class="body"><strong>Take away the context</strong><br>
+    Run the reviewer on the diff only and score it. Use the <b>--no-context</b> box under <b>Paste and check</b>. Note what changed.</div></div>
+
+  <div class="step"><input type="checkbox" data-step="s2"><div class="body"><strong>Rewrite the reviewer prompt as a spec</strong><br>
+    Open <code>lab2/ai_review.py</code> and find the review prompt. Rewrite it with:
+    <ul>
+      <li>the allowed categories: <code>hardcoded-secret</code>, <code>injection</code>, <code>broken-access-control</code>, <code>iac-misconfig</code>, <code>logic-bug</code></li>
+      <li>required output for each finding: file, line, category, and the evidence from the code</li>
+      <li>a rule to report nothing rather than guess</li>
+    </ul></div></div>
+
+  <div class="step"><input type="checkbox" data-step="s3"><div class="body"><strong>Run and score your version</strong><br>Use the <b>Solo</b> box. Compare it to your earlier scores in the result panel.</div></div>
+
+  <div class="step"><input type="checkbox" data-step="s4"><div class="body"><strong>Reveal the answer key</strong><br>Only after all four scores are pasted. Use the last box and write your verdict.</div></div>
+
+  <div class="note"><b>Stretch:</b> run your reviewer three times. Do the findings change between runs? What does that say about using a single AI run as your only review?</div>
+</section>
+
+<section id="check">
+<h2>4. Paste and check <span class="badge">scored</span></h2>
+<p class="sub">Run each command on your VM, paste the output, press Check. You can fix and check again.</p>
+<div id="checks"></div>
+</section>
+<section id="debrief">
+<h2>5. Debrief quiz <span class="badge">5 min</span></h2>
+<p class="sub">Three quick questions. Each answer comes with the reason.</p>
+<div id="quiz"></div>
+</section>
+<section id="result" class="summary">
+<h2>Your result</h2>
+<div class="big" id="big">0 / 0</div>
+<div id="derive" class="derive"></div>
+<textarea id="sumtxt" readonly></textarea>
+<button class="btn" id="copyres" type="button">Copy my result</button>
+<button class="btn ghost" id="reset" type="button">Reset this page</button>
+<p class="sub">Paste the copied text in the call chat for the trainer (Anil).</p>
+</section>
+</main>
+<footer>Works offline. Nothing is sent anywhere: checks run in your browser.</footer>
+<script>// Shared helpers used by the lab validators. Input text is already ANSI-stripped and trimmed.
+function lastNumber(t, re) {
+  var m, last = null, g = new RegExp(re.source, re.flags.indexOf('g') >= 0 ? re.flags : re.flags + 'g');
+  while ((m = g.exec(t)) !== null) { last = m; if (m[0] === '') g.lastIndex++; }
+  return last ? +last[1] : null;
+}
+// Pulls a score out of scorer output: "78/100", "Total: 78", "Score = 60 pts"
+function scoreOf(t) {
+  var s = lastNumber(t, /(-?\d{1,3})\s*\/\s*100\b/);
+  if (s == null) s = lastNumber(t, /(?:score|total|points)\D{0,20}?(-?\d{1,3})\b/i);
+  return (s != null && s >= -100 && s <= 100) ? s : null;
+}
+function scoreCheck(label) {
+  return function (t) {
+    var s = scoreOf(t);
+    if (s == null) return { ok: false, msg: 'No score found. Paste the full output of the scorer, including the last lines.' };
+    return { ok: true, msg: label + ' recorded: ' + s + '/100.', data: { score: s } };
+  };
+}
+function parseJson(t) {
+  // Finds the JSON in a paste that may also contain the prompt, the echoed command or other text.
+  // Tries every start/end bracket pair and keeps the longest slice that parses.
+  var best = null, bestLen = -1, starts = [], ends = [], k;
+  if (t.length > 40000) t = t.slice(0, 40000);
+  for (k = 0; k < t.length; k++) { var ch = t[k]; if (ch === '[' || ch === '{') starts.push(k); else if (ch === ']' || ch === '}') ends.push(k); }
+  starts.slice(0, 60).forEach(function (s) {
+    for (var e = ends.length - 1; e >= 0 && ends[e] > s; e--) {
+      if (ends[e] - s + 1 <= bestLen) break;
+      try { var v = JSON.parse(t.slice(s, ends[e] + 1)); best = v; bestLen = ends[e] - s + 1; break; } catch (x) {}
+    }
+  });
+  if (best === null) throw new Error('no json');
+  return best;
+}
+</script>
+<script>window.LAB = {
+  id: 'd1-b3',
+  short: 'Block 3: AI review vs scanner on a seeded PR',
+  checks: [
+    {
+      id: 'c1', points: 20, title: 'Score after the Trivy scan',
+      prompt: 'Score what the scanner found.',
+      cmd: 'python lab2/score.py',
+      validate: scoreCheck('Trivy stage score')
+    },
+    {
+      id: 'c2', points: 20, title: 'Score after the AI review (with context)',
+      prompt: 'Score what the AI reviewer found when it can see the full files.',
+      cmd: 'python lab2/score.py',
+      validate: scoreCheck('AI review score')
+    },
+    {
+      id: 'c3', points: 20, title: 'Score after the AI review with --no-context',
+      prompt: 'Run the reviewer on the diff only, then score again.',
+      cmd: 'python lab2/ai_review.py --no-context\npython lab2/score.py',
+      validate: scoreCheck('No-context score')
+    },
+    {
+      id: 'c4', points: 20, title: 'Solo: score after your own reviewer spec',
+      prompt: 'Run your rewritten reviewer and score it. Do not run the reveal command until all four scores are in.',
+      cmd: 'python lab2/ai_review.py\npython lab2/score.py',
+      validate: scoreCheck('Your reviewer spec score')
+    },
+    {
+      id: 'c5', points: 20, title: 'Your verdict after the reveal',
+      prompt: 'Run the reveal command below and read the key. Paste the reveal output, then add a new line that starts with <code>Verdict:</code> and write two or three sentences: which issue did the tools miss or get wrong, and what would you do about it in a real review?',
+      cmd: 'python lab2/score.py --reveal',
+      validate: function (t) {
+        var m = t.match(/verdict\s*:\s*([\s\S]+)$/i);
+        if (!m) return { ok: false, msg: 'Add a line starting with "Verdict:" after the reveal output, then write your two or three sentences.' };
+        var words = m[1].split(/\s+/).filter(Boolean).length;
+        if (words < 12) return { ok: false, msg: 'Write at least two sentences after "Verdict:" (about ' + words + ' words so far).' };
+        return { ok: true, msg: 'Verdict recorded.' };
+      }
+    }
+  ],
+  quiz: [
+    {
+      q: 'Which statement about a scanner like Trivy versus an AI reviewer is most accurate?',
+      options: ['The AI reviewer is always more accurate', 'A scanner is deterministic on known patterns; an AI reviewer understands context but can vary and be wrong', 'A scanner understands business logic better', 'They find exactly the same issues'],
+      answer: 1,
+      why: 'Use them together: the scanner gives repeatable coverage of known patterns, the reviewer adds context, and neither replaces your own check.'
+    },
+    {
+      q: 'The scorer takes 5 points off for each false positive. What habit does that build?',
+      options: ['Ask the AI for more findings', 'Verify each AI finding before you act on it or report it', 'Never trust any AI output', 'Run the scan twice'],
+      answer: 1,
+      why: 'Unverified findings waste a reviewer\'s time and erode trust in the tool. Check the file and line before you accept a finding.'
+    },
+    {
+      q: 'You run the same AI review twice and get different findings. What does that tell you?',
+      options: ['The tool is broken', 'One run is not ground truth; score it against a checker and compare runs', 'You should pick the longer list', 'The scanner will behave the same way'],
+      answer: 1,
+      why: 'Model output varies. That is why we score against a seeded answer key instead of trusting any single run.'
+    }
+  ],
+  derive: function (st) {
+    var ids = ['c1', 'c2', 'c3', 'c4'], names = ['Trivy', 'AI + context', 'AI no context', 'Your spec'], rows = '', txt = [], have = 0;
+    ids.forEach(function (id, i) {
+      var r = st.checks[id], s = (r && r.data) ? r.data.score : null;
+      rows += '<tr><td>' + names[i] + '</td><td>' + (s == null ? '-' : s) + '</td></tr>';
+      txt.push(names[i] + '=' + (s == null ? '-' : s));
+      if (s != null) have++;
+    });
+    if (!have) return { html: '', text: '' };
+    var msg = '', a = st.checks.c2, d = st.checks.c4;
+    if (a && a.data && d && d.data) {
+      var diff = d.data.score - a.data.score;
+      msg = diff > 0 ? 'Your reviewer spec beat the default run by ' + diff + ' points.' :
+        diff === 0 ? 'Your reviewer spec scored the same as the default run.' :
+        'Your reviewer spec scored ' + (-diff) + ' points lower than the default run. One run is noise: that is a result worth discussing.';
+    }
+    return {
+      html: '<table><tr><th>Stage</th><th>Score</th></tr>' + rows + '</table>' + (msg ? '<p>' + msg + '</p>' : ''),
+      text: 'Scores: ' + txt.join(' | ') + (msg ? '\n' + msg : '')
+    };
+  }
+};
+</script>
+<script>(function () {
+  var C = window.LAB;
+  var KEY = 'ey-aidevops-' + C.id;
+  var state = load() || { name: '', steps: {}, checks: {}, quiz: null };
+
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function clean(t) { return String(t || '').replace(/\x1b\[[0-9;?]*[A-Za-z]/g, '').replace(/\r/g, '').trim(); }
+
+  function copyText(text, done) {
+    function fallback() {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta); done && done();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done && done(); }, fallback);
+    } else fallback();
+  }
+
+  // copy buttons on every command block
+  $$('pre.cmd').forEach(function (pre) {
+    var w = el('div', 'cmdwrap'); pre.parentNode.insertBefore(w, pre); w.appendChild(pre);
+    var b = el('button', 'copy', 'Copy'); b.type = 'button';
+    b.onclick = function () { copyText(pre.innerText.replace(/\n$/, ''), function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1200); }); };
+    w.appendChild(b);
+  });
+
+  // name
+  var nameIn = $('#who-name');
+  if (nameIn) { nameIn.value = state.name || ''; nameIn.oninput = function () { state.name = nameIn.value.trim(); save(); renderSummary(); }; }
+
+  // steps
+  var stepBoxes = $$('input[data-step]');
+  stepBoxes.forEach(function (cb) {
+    var id = cb.getAttribute('data-step');
+    cb.checked = !!state.steps[id];
+    cb.closest('.step').classList.toggle('done', cb.checked);
+    cb.onchange = function () { state.steps[id] = cb.checked; cb.closest('.step').classList.toggle('done', cb.checked); save(); progress(); };
+  });
+
+  // checks
+  var checksHost = $('#checks');
+  C.checks.forEach(function (c) {
+    var box = el('div', 'chk');
+    box.innerHTML = '<h3>' + esc(c.title) + ' <span class="pts">(' + c.points + ' pts)</span></h3>' +
+      '<div>' + c.prompt + '</div>' +
+      (c.cmd ? '<pre class="cmd">' + esc(c.cmd) + '</pre>' : '') +
+      '<textarea spellcheck="false" placeholder="Paste the output here"></textarea>' +
+      '<button class="btn" type="button">Check</button><div class="res"></div>';
+    checksHost.appendChild(box);
+    var ta = $('textarea', box), btn = $('button.btn', box), res = $('.res', box);
+    var cb = $('pre.cmd', box);
+    if (cb) {
+      var w = el('div', 'cmdwrap'); cb.parentNode.insertBefore(w, cb); w.appendChild(cb);
+      var b = el('button', 'copy', 'Copy'); b.type = 'button';
+      b.onclick = function () { copyText(c.cmd, function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1200); }); };
+      w.appendChild(b);
+    }
+    var prev = state.checks[c.id];
+    if (prev) { ta.value = prev.text || ''; show(prev); }
+    function show(r) {
+      res.className = 'res ' + (r.ok ? 'ok' : (r.earned > 0 ? 'part' : 'bad'));
+      res.textContent = (r.ok ? '\u2714 ' : (r.earned > 0 ? '\u25D0 ' : '\u2716 ')) + r.msg + '  [' + r.earned + '/' + c.points + ']';
+    }
+    btn.onclick = function () {
+      var t = clean(ta.value), r;
+      if (!t) { r = { ok: false, earned: 0, msg: 'Nothing pasted yet.', text: '' }; }
+      else {
+        try { r = c.validate(t) || {}; } catch (e) { r = { ok: false, msg: 'Could not read that output. Paste the full command output.' }; }
+        r.earned = r.ok ? (r.earned != null ? r.earned : c.points) : (r.earned || 0);
+        r.text = ta.value;
+      }
+      state.checks[c.id] = r; save(); show(r); progress(); renderSummary();
+    };
+  });
+
+  // quiz
+  var quizHost = $('#quiz');
+  C.quiz.forEach(function (q, qi) {
+    var box = el('div', 'q');
+    var h = '<p>' + (qi + 1) + '. ' + esc(q.q) + '</p>';
+    q.options.forEach(function (o, oi) { h += '<label><input type="radio" name="q' + qi + '" value="' + oi + '"> ' + esc(o) + '</label>'; });
+    h += '<div class="why"></div>';
+    box.innerHTML = h; quizHost.appendChild(box);
+  });
+  var qbtn = el('button', 'btn', 'Submit answers'); qbtn.type = 'button'; quizHost.appendChild(qbtn);
+  var qout = el('div', 'sub'); quizHost.appendChild(qout);
+  function renderQuiz(saved) {
+    var boxes = $$('.q', quizHost), right = 0, answered = 0;
+    boxes.forEach(function (box, qi) {
+      var pick = saved[qi];
+      if (pick == null) return;
+      answered++;
+      var inp = $$('input', box)[pick]; if (inp) inp.checked = true;
+      var ok = pick === C.quiz[qi].answer; if (ok) right++;
+      box.classList.remove('right', 'wrong'); box.classList.add(ok ? 'right' : 'wrong');
+      $('.why', box).textContent = (ok ? 'Correct. ' : 'Not quite. ') + C.quiz[qi].why;
+    });
+    qout.textContent = answered ? 'Quiz: ' + right + '/' + C.quiz.length + ' correct' : '';
+    return right;
+  }
+  qbtn.onclick = function () {
+    var picks = C.quiz.map(function (q, qi) { var r = $('input[name="q' + qi + '"]:checked'); return r ? +r.value : null; });
+    state.quiz = picks; save(); renderQuiz(picks); progress(); renderSummary();
+  };
+  if (state.quiz) renderQuiz(state.quiz);
+
+  // progress
+  function progress() {
+    var total = stepBoxes.length + C.checks.length + 1, done = 0;
+    stepBoxes.forEach(function (cb) { if (cb.checked) done++; });
+    C.checks.forEach(function (c) { var r = state.checks[c.id]; if (r && r.earned > 0) done++; });
+    if (state.quiz && state.quiz.every(function (p) { return p != null; })) done++;
+    var pct = Math.round(100 * done / total);
+    $('.pbar i').style.width = pct + '%'; $('.pct').textContent = pct + '%';
+  }
+
+  // summary
+  function quizScore() {
+    if (!state.quiz) return null;
+    var r = 0; state.quiz.forEach(function (p, i) { if (p === C.quiz[i].answer) r++; }); return r;
+  }
+  function renderSummary() {
+    var max = 0, got = 0, lines = [], passed = 0;
+    C.checks.forEach(function (c) {
+      var r = state.checks[c.id]; max += c.points; var e = r ? r.earned : 0; got += e; if (r && r.ok) passed++;
+      lines.push(' ' + (r ? (r.ok ? '[PASS]' : (e > 0 ? '[PART]' : '[FAIL]')) : '[----]') + ' ' + e + '/' + c.points + '  ' + c.title);
+    });
+    var qs = quizScore();
+    var txt = 'EY AI for DevOps | Day 1 | ' + C.short + '\nParticipant: ' + (state.name || '(enter your id above)') +
+      '\nStamp: ' + new Date().toLocaleString() + '\nChecks passed: ' + passed + '/' + C.checks.length + '   Points: ' + got + '/' + max +
+      '\nQuiz: ' + (qs == null ? 'not submitted' : qs + '/' + C.quiz.length) + '\n' + lines.join('\n');
+    if (C.derive) { var d = C.derive(state); if (d && d.text) txt += '\n' + d.text; $('#derive').innerHTML = d && d.html ? d.html : ''; }
+    $('#big').textContent = got + ' / ' + max;
+    $('#sumtxt').value = txt;
+  }
+  $('#copyres').onclick = function () { var b = $('#copyres'); copyText($('#sumtxt').value, function () { b.textContent = 'Copied. Paste it in the call chat'; setTimeout(function () { b.textContent = 'Copy my result'; }, 2000); }); };
+  $('#reset').onclick = function () { if (confirm('Clear everything you entered on this page?')) { try { localStorage.removeItem(KEY); } catch (e) {} location.reload(); } };
+
+  progress(); renderSummary();
+})();
+</script>
+</body></html>
