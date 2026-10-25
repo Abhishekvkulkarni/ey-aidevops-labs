@@ -90,10 +90,13 @@ def r3(df, **_):
     return got, ("; ".join(notes) or "multi-stage and .dockerignore present")
 
 
-def r4(tpl, **_):
+def r4(tpl, values=None, **_):
     if not tpl:
         return 0, "no API templates in helm/templates"
-    ro = re.search(r"readOnlyRootFilesystem:\s*true", tpl)
+    pat = r"readOnlyRootFilesystem:\s*true"
+    # the flag may live in values.yaml and be rendered into the template via toYaml
+    ro = re.search(pat, tpl) or (
+        "securityContext" in tpl and ".Values" in tpl and values and re.search(pat, values))
     tmp = re.search(r"emptyDir", tpl) and re.search(r"mountPath:\s*/tmp\b", tpl)
     got, notes = 0.0, []
     if ro:
