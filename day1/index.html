@@ -102,13 +102,13 @@ footer{max-width:900px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font
 <section>
 <h2>Before you start</h2>
 <ul>
-<li>Work on your lab VM. Open a PowerShell terminal and run <code>. C:\EYLAB\ey-aidevops-labs\lab-env.ps1</code> to load your lab card.</li>
-<li><b>Get the code (once).</b> Fork and clone the repo, then open <code>day1\index.html</code> from that folder:
+<li><b>Get the code (once), in PowerShell on your lab VM.</b> Fork and clone the repo, then open <code>day1\index.html</code> from that folder:
 <pre>gh auth login
 cd C:\EYLAB
 gh repo fork askanilkumar/ey-aidevops-labs --clone
 cd ey-aidevops-labs
 gh repo set-default (git remote get-url origin)</pre></li>
+<li><b>Load your lab card (every new terminal).</b> After the code is cloned, run <code>. C:\EYLAB\ey-aidevops-labs\lab-env.ps1</code> in PowerShell. It reads <code>C:\EYLAB\lab-card.json</code>, which the trainer placed on your VM.</li>
 <li><b>Each morning:</b> run <code>.\sync.ps1</code> in the repo folder to get that day's pages.</li>
 <li>Open these pages from your cloned or downloaded folder (double-click the file). Do not open them on github.com: that shows the source, not the page. Use any browser. Copy commands with the Copy button.</li>
 <li>After each command, paste the output into the page and press <b>Check</b>. The page scores it instantly, in your browser.</li>
