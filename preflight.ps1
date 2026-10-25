@@ -1,4 +1,4 @@
-# Checks that this VM has everything Day 1 needs.   Run:  . C:\EYLAB\lab-env.ps1   then   .\preflight.ps1
+# Checks that this VM has everything Day 1 needs.   Run:  . C:\EYLAB\ey-aidevops-labs\lab-env.ps1   then   .\preflight.ps1
 $script:bad = 0
 function Check($name, [scriptblock]$test, $hint) {
     $ok = $false; $detail = ""
@@ -24,7 +24,7 @@ Check "base image pulled" { docker image inspect python:3.12-slim } "run: docker
 Check "kubectl"        { kubectl version --client } "install kubectl"
 Check "helm 3"         { helm version --short }     "install helm 3"
 Check "trivy"          { trivy --version }          "install trivy and run: trivy image --download-db-only"
-Check "lab card loaded" { if ($env:NAMESPACE -and $env:ACR_LOGIN_SERVER -and $env:ACR_USER -and $env:ACR_TOKEN -and $env:KUBECONFIG -and $env:AZURE_OPENAI_ENDPOINT -and $env:AZURE_OPENAI_API_KEY) { 'ok' } else { 'FAIL' } } "run: . C:\EYLAB\lab-env.ps1 (and check C:\EYLAB\lab-card.json)"
+Check "lab card loaded" { if ($env:NAMESPACE -and $env:ACR_LOGIN_SERVER -and $env:ACR_USER -and $env:ACR_TOKEN -and $env:KUBECONFIG -and $env:AZURE_OPENAI_ENDPOINT -and $env:AZURE_OPENAI_API_KEY) { 'ok' } else { 'FAIL' } } "run: . C:\EYLAB\ey-aidevops-labs\lab-env.ps1 (and check C:\EYLAB\lab-card.json)"
 Check "cluster reachable (your namespace)" { kubectl -n $env:NAMESPACE get pods } "check the kubeconfig and your namespace"
 Check "ACR login"      { docker pull "$env:ACR_LOGIN_SERVER/shared/shipwave-worker:1.0" } "worker image missing or ACR login failed (trainer: push the worker image)"
 

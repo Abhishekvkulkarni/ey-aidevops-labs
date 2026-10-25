@@ -125,15 +125,15 @@ footer{max-width:900px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font
 
   <div class="step"><input type="checkbox" data-step="g1"><div class="body"><strong>Open the repo and load your lab card</strong><br>
     In a PowerShell terminal on your VM:
-    <pre class="cmd">. C:\EYLAB\lab-env.ps1
-cd C:\EYLAB\shipwave
+    <pre class="cmd">. C:\EYLAB\ey-aidevops-labs\lab-env.ps1
+cd C:\EYLAB\ey-aidevops-labs
 echo $env:NAMESPACE
 # first time on this VM only: Git needs a name and email to commit
 if (-not (git config user.email)) { git config --global user.email "$env:USERNAME@lab.local"; git config --global user.name "$env:USERNAME" }</pre>
     You should see your namespace, for example <code>ff-u07</code>.</div></div>
 
   <div class="step"><input type="checkbox" data-step="g2"><div class="body"><strong>Ask with a basic prompt</strong><br>
-    Open the <code>shipwave</code> folder in VS Code. In Copilot Chat (agent mode) send exactly:
+    Open the <code>ey-aidevops-labs</code> folder in VS Code. In Copilot Chat (agent mode) send exactly:
     <pre class="cmd">Containerize and deploy the Shipwave API to Kubernetes with Helm.</pre>
     Accept the files it creates (Dockerfile in <code>api/</code>, chart in <code>helm/</code>).</div></div>
 

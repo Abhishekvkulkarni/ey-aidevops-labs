@@ -5,7 +5,7 @@ Usage (from the repo root):
   python lab2/ai_review.py               review with context (diff + full source files)
   python lab2/ai_review.py --no-context  review the diff only
 
-Needs the environment from  . C:\\EYLAB\\lab-env.ps1  (AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_KEY,
+Needs the environment from  . C:\\EYLAB\\ey-aidevops-labs\\lab-env.ps1  (AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_KEY,
 AZURE_OPENAI_DEPLOYMENT).  Trainer dry run without a model:  --mock
 """
 import argparse
@@ -72,7 +72,7 @@ def call_model(system, user):
     missing = [n for n, v in (("AZURE_OPENAI_ENDPOINT", endpoint), ("AZURE_OPENAI_API_KEY", key),
                               ("AZURE_OPENAI_DEPLOYMENT", deployment)) if not v]
     if missing:
-        sys.exit("Missing environment: " + ", ".join(missing) + "\nRun  . C:\\EYLAB\\lab-env.ps1  in this terminal.")
+        sys.exit("Missing environment: " + ", ".join(missing) + "\nRun  . C:\\EYLAB\\ey-aidevops-labs\\lab-env.ps1  in this terminal.")
     url = f"{endpoint}/openai/deployments/{deployment}/chat/completions?api-version={version}"
     body = json.dumps({
         "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],

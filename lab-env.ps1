@@ -1,4 +1,4 @@
-# Dot-source this at the start of every terminal:   . C:\EYLAB\lab-env.ps1
+# Dot-source this at the start of every terminal:   . C:\EYLAB\ey-aidevops-labs\lab-env.ps1
 # It reads your lab card (C:\EYLAB\lab-card.json, placed on your VM by the trainer) and sets environment variables.
 # Nothing secret is stored in this file.
 
