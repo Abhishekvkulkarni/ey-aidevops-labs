@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""AI reviewer for the seeded PR. Reads the PR diff, asks a model to review it, saves lab2/ai_findings.json.
+"""AI reviewer for the seeded PR. Reads the PR diff, asks a model to review it, saves day1/labs/block3-ai-review/ai_findings.json.
 
 Usage (from the repo root):
-  python lab2/ai_review.py               review with context (diff + full source files)
-  python lab2/ai_review.py --no-context  review the diff only
+  python day1/labs/block3-ai-review/ai_review.py               review with context (diff + full source files)
+  python day1/labs/block3-ai-review/ai_review.py --no-context  review the diff only
 
 Needs the environment from  . C:\\EYLAB\\ey-aidevops-labs\\lab-env.ps1  (AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_KEY,
 AZURE_OPENAI_DEPLOYMENT).  Trainer dry run without a model:  --mock
@@ -18,8 +18,17 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "lab2" / "ai_findings.json"
+def _find_root():
+    """The repo root is the folder that holds api/ and helm/ (works wherever this script lives)."""
+    for p in Path(__file__).resolve().parents:
+        if (p / "api").is_dir() and (p / "helm").is_dir():
+            return p
+    return Path.cwd()
+
+
+ROOT = _find_root()
+HERE = Path(__file__).resolve().parent
+OUT = HERE / "ai_findings.json"
 
 # ---------------------------------------------------------------------------------------------
 # SOLO CHALLENGE: this is the prompt you rewrite as a spec. Keep the rest of the file as it is.
@@ -47,9 +56,9 @@ def git(*args):
 
 
 def build_user_message(with_context):
-    base_file = ROOT / "lab2" / ".pr_base"
+    base_file = HERE / ".pr_base"
     if not base_file.exists():
-        sys.exit("Seeded PR not loaded yet. Run:  python lab2/apply_pr.py")
+        sys.exit("Seeded PR not loaded yet. Run:  python day1/labs/block3-ai-review/apply_pr.py")
     base = base_file.read_text().strip()
     diff = git("diff", base, "HEAD")
     parts = ["PULL REQUEST DIFF:\n" + diff]
@@ -117,7 +126,7 @@ def main():
     print(f"AI reviewer ({mode}) reported {len(findings)} finding(s):")
     for f in findings:
         print(f"  {f.get('file')}:{f.get('line', '?')}  [{f.get('category', '?')}]  {str(f.get('evidence', ''))[:70]}")
-    print("\nSaved to lab2/ai_findings.json. Now run:  python lab2/score.py")
+    print("\nSaved to day1/labs/block3-ai-review/ai_findings.json. Now run:  python day1/labs/block3-ai-review/score.py")
     return 0
 
 

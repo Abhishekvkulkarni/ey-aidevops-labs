@@ -2,7 +2,7 @@
 """Mutation check: inject 6 known bugs into a COPY of api/, run your tests against each,
 and count how many bugs your tests catch. Your real code is never changed.
 
-Usage (from the repo root):  python lab3/mutation_check.py
+Usage (from the repo root):  python day1/labs/block2-pipeline/mutation_check.py
 """
 import os
 import shutil
@@ -11,7 +11,15 @@ import sys
 import tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+def _find_root():
+    """The repo root is the folder that holds api/ and helm/ (works wherever this script lives)."""
+    for p in Path(__file__).resolve().parents:
+        if (p / "api").is_dir() and (p / "helm").is_dir():
+            return p
+    return Path.cwd()
+
+
+ROOT = _find_root()
 API = ROOT / "api"
 
 # (file, original text, mutated text, plain-English description)
@@ -39,7 +47,7 @@ def main():
     tests = list((API / "tests").glob("test_*.py"))
     if not tests:
         print("No tests found in api/tests. Copy the ready-made file first:")
-        print("  Copy-Item lab3\\ready_made_tests\\test_api.py api\\tests\\")
+        print("  Copy-Item day1\\labs\\block2-pipeline\\ready_made_tests\\test_api.py api\\tests\\")
         print("Mutants killed: 0/6")
         return 1
 

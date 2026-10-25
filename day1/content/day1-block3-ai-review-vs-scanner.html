@@ -114,23 +114,23 @@ footer{max-width:900px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font
   <p class="sub">Goal: review the seeded PR with the scanner and with the AI, and score each.</p>
 
   <div class="step"><input type="checkbox" data-step="g1"><div class="body"><strong>Load the seeded PR</strong>
-    <pre class="cmd">python lab2/apply_pr.py</pre>
+    <pre class="cmd">python day1/labs/block3-ai-review/apply_pr.py</pre>
     This puts the PR changes on a local branch. <b>Do not push this branch to GitHub.</b> It contains a fake token on purpose and GitHub will block the push.</div></div>
 
   <div class="step"><input type="checkbox" data-step="g2"><div class="body"><strong>Run the scanner</strong>
-    <pre class="cmd">trivy fs --scanners secret,misconfig --format json -o lab2/trivy.json .</pre></div></div>
+    <pre class="cmd">trivy fs --scanners secret,misconfig --format json -o day1/labs/block3-ai-review/trivy.json .</pre></div></div>
 
   <div class="step"><input type="checkbox" data-step="g3"><div class="body"><strong>Score the scanner</strong>
-    <pre class="cmd">python lab2/score.py</pre>
+    <pre class="cmd">python day1/labs/block3-ai-review/score.py</pre>
     Paste into <b>Score after the Trivy scan</b>.</div></div>
 
   <div class="checkpoint">Checkpoint: everyone has a Trivy score. Wait for the trainer (Anil).</div>
 
   <div class="step"><input type="checkbox" data-step="g4"><div class="body"><strong>Run the AI reviewer</strong>
-    <pre class="cmd">python lab2/ai_review.py</pre></div></div>
+    <pre class="cmd">python day1/labs/block3-ai-review/ai_review.py</pre></div></div>
 
   <div class="step"><input type="checkbox" data-step="g5"><div class="body"><strong>Score again</strong>
-    <pre class="cmd">python lab2/score.py</pre>
+    <pre class="cmd">python day1/labs/block3-ai-review/score.py</pre>
     Paste into <b>Score after the AI review (with context)</b>. Before you move on, open each AI finding and check the file and line yourself: is it real?</div></div>
 </section>
 
@@ -142,7 +142,7 @@ footer{max-width:900px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font
     Run the reviewer on the diff only and score it. Use the <b>--no-context</b> box under <b>Paste and check</b>. Note what changed.</div></div>
 
   <div class="step"><input type="checkbox" data-step="s2"><div class="body"><strong>Rewrite the reviewer prompt as a spec</strong><br>
-    Open <code>lab2/ai_review.py</code> and find the review prompt. Rewrite it with:
+    Open <code>day1/labs/block3-ai-review/ai_review.py</code> and find the review prompt. Rewrite it with:
     <ul>
       <li>the allowed categories: <code>hardcoded-secret</code>, <code>injection</code>, <code>broken-access-control</code>, <code>iac-misconfig</code>, <code>logic-bug</code></li>
       <li>required output for each finding: file, line, category, and the evidence from the code</li>
@@ -219,31 +219,31 @@ function parseJson(t) {
     {
       id: 'c1', points: 20, title: 'Score after the Trivy scan',
       prompt: 'Score what the scanner found.',
-      cmd: 'python lab2/score.py',
+      cmd: 'python day1/labs/block3-ai-review/score.py',
       validate: scoreCheck('Trivy stage score')
     },
     {
       id: 'c2', points: 20, title: 'Score after the AI review (with context)',
       prompt: 'Score what the AI reviewer found when it can see the full files.',
-      cmd: 'python lab2/score.py',
+      cmd: 'python day1/labs/block3-ai-review/score.py',
       validate: scoreCheck('AI review score')
     },
     {
       id: 'c3', points: 20, title: 'Score after the AI review with --no-context',
       prompt: 'Run the reviewer on the diff only, then score again.',
-      cmd: 'python lab2/ai_review.py --no-context\npython lab2/score.py',
+      cmd: 'python day1/labs/block3-ai-review/ai_review.py --no-context\npython day1/labs/block3-ai-review/score.py',
       validate: scoreCheck('No-context score')
     },
     {
       id: 'c4', points: 20, title: 'Solo: score after your own reviewer spec',
       prompt: 'Run your rewritten reviewer and score it. Do not run the reveal command until all four scores are in.',
-      cmd: 'python lab2/ai_review.py\npython lab2/score.py',
+      cmd: 'python day1/labs/block3-ai-review/ai_review.py\npython day1/labs/block3-ai-review/score.py',
       validate: scoreCheck('Your reviewer spec score')
     },
     {
       id: 'c5', points: 20, title: 'Your verdict after the reveal',
       prompt: 'Run the reveal command below and read the key. Paste the reveal output, then add a new line that starts with <code>Verdict:</code> and write two or three sentences: which issue did the tools miss or get wrong, and what would you do about it in a real review?',
-      cmd: 'python lab2/score.py --reveal',
+      cmd: 'python day1/labs/block3-ai-review/score.py --reveal',
       validate: function (t) {
         var m = t.match(/verdict\s*:\s*([\s\S]+)$/i);
         if (!m) return { ok: false, msg: 'Add a line starting with "Verdict:" after the reveal output, then write your two or three sentences.' };

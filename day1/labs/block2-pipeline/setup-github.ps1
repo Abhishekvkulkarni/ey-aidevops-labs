@@ -1,6 +1,6 @@
 # Sets the GitHub variables and secrets that the pipeline reads (spec P7).
 # Run from the repo root AFTER `. C:\EYLAB\ey-aidevops-labs\lab-env.ps1` and after the repo exists on GitHub.
-#   .\lab3\setup-github.ps1
+#   .\day1\labs\block2-pipeline\setup-github.ps1
 
 $required = "NAMESPACE", "ACR_LOGIN_SERVER", "ACR_USER", "ACR_TOKEN", "KUBECONFIG_B64"
 $missing = $required | Where-Object { -not (Get-Item "env:$_" -ErrorAction SilentlyContinue) }

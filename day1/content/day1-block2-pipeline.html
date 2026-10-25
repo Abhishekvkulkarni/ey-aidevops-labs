@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI review vs scanner</title>
+<title>Let the pipeline ship it</title>
 <style>:root{
   --bg:#f6f6f4; --card:#ffffff; --ink:#1f1f26; --muted:#5b5b66; --line:#dcdcd6;
   --accent:#ffe600; --accent-ink:#2e2e38; --head:#2e2e38; --head-ink:#ffffff;
@@ -86,8 +86,8 @@ footer{max-width:900px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font
 </style></head>
 <body>
 <header class="top"><div class="wrap">
-<div class="kicker">EY &middot; AI for DevOps &middot; Day 1 &middot; Block 3</div>
-<h1>AI review vs scanner</h1><p>Two reviewers, one seeded PR. Who catches what?</p></div></header>
+<div class="kicker">EY &middot; AI for DevOps &middot; Day 1 &middot; Block 2</div>
+<h1>Let the pipeline ship it</h1><p>Write a pipeline spec, let AI write the YAML, then prove it works.</p></div></header>
 <nav class="bar"><div class="wrap">
 <a href="index.html">Day 1 home</a><a href="#concept">Concept</a><a href="#guided">Guided lab</a><a href="#solo">Solo</a><a href="#check">Check</a><a href="#debrief">Quiz</a><a href="#result">Result</a>
 <div class="pbar"><i></i></div><span class="pct">0%</span></div></nav>
@@ -95,65 +95,73 @@ footer{max-width:900px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font
 <section><div class="who"><b>Your id</b> <input id="who-name" placeholder="u07" aria-label="Your participant id"> <span class="sub" style="margin:0">Your progress is saved in this browser.</span></div></section>
 <section id="concept">
   <h2>1. Concept <span class="badge">10 min · trainer (Anil) leads</span></h2>
-  <p class="sub">A pull request lands. Two reviewers look at it: a scanner and an AI. Who catches what?</p>
+  <p class="sub">A pipeline is a spec that runs. Treat it like one.</p>
   <div class="two">
     <div class="panel b">
-      <h4>Scanner (Trivy)</h4>
-      <p>Fast, repeatable, rule-based. Strong on known patterns such as leaked secrets and risky infrastructure settings.</p>
+      <h4>Four gates, in this order</h4>
+      <p><b>lint</b> → <b>test</b> → <b>build</b> → <b>deploy</b></p>
+      <p>Cheap checks first. Each job needs the one before it, so bad code never reaches the cluster.</p>
     </div>
     <div class="panel a">
-      <h4>AI reviewer</h4>
-      <p>Reads the code like a person. Can follow logic and context, but varies between runs and sometimes invents problems.</p>
+      <h4>Three habits to verify in AI-written YAML</h4>
+      <p>1. Image tag is the <b>commit SHA</b>, not <code>latest</code>.<br>2. Secrets come from <b>GitHub secrets</b>, never from the file.<br>3. Every action has a <b>version tag</b>.</p>
     </div>
   </div>
-  <div class="note"><b>How we score.</b> The PR has <b>5 planted issues</b>. You get <b>20 points</b> for each one found by any tool, and <b>minus 5</b> for each false positive. Matching is by file and category, so be precise about both.</div>
+  <div class="note"><b>Tests need testing too.</b> A suite can show high coverage and still let bugs through. The mutation check injects 6 known bugs and counts how many your tests catch.</div>
 </section>
 
 <section id="guided">
   <h2>2. Guided lab <span class="badge">25 min · follow along</span></h2>
-  <p class="sub">Goal: review the seeded PR with the scanner and with the AI, and score each.</p>
+  <p class="sub">Goal: a green pipeline that deploys your API from GitHub to your namespace.</p>
 
-  <div class="step"><input type="checkbox" data-step="g1"><div class="body"><strong>Load the seeded PR</strong>
-    <pre class="cmd">python lab2/apply_pr.py</pre>
-    This puts the PR changes on a local branch. <b>Do not push this branch to GitHub.</b> It contains a fake token on purpose and GitHub will block the push.</div></div>
+  <div class="step"><input type="checkbox" data-step="g1"><div class="body"><strong>Push your work to your fork and switch on Actions</strong>
+    <pre class="cmd">gh auth status
+git push origin main</pre>
+    Open your fork on GitHub, go to the <b>Actions</b> tab and press <b>I understand my workflows, go ahead and enable them</b> (new forks start with Actions off). Push only <code>main</code> today, never other branches. Your fork is public: never print a secret or the kubeconfig in a workflow step.</div></div>
 
-  <div class="step"><input type="checkbox" data-step="g2"><div class="body"><strong>Run the scanner</strong>
-    <pre class="cmd">trivy fs --scanners secret,misconfig --format json -o lab2/trivy.json .</pre></div></div>
+  <div class="step"><input type="checkbox" data-step="g2"><div class="body"><strong>Load the pipeline settings with the setup script</strong><br>
+    One script sets the GitHub variables and secrets the pipeline reads. You do not type any secret by hand.
+    <pre class="cmd">.\day1\labs\block2-pipeline\setup-github.ps1</pre></div></div>
 
-  <div class="step"><input type="checkbox" data-step="g3"><div class="body"><strong>Score the scanner</strong>
-    <pre class="cmd">python lab2/score.py</pre>
-    Paste into <b>Score after the Trivy scan</b>.</div></div>
+  <div class="step"><input type="checkbox" data-step="g3"><div class="body"><strong>Read the pipeline spec</strong><br>
+    The trainer (Anil) has released the spec: run <code>.\sync.ps1</code>, then open <code>day1/labs/block2-pipeline/pipeline-spec.md</code>. Note requirements P2 (job names), P5 (tag) and P7 (secrets).</div></div>
 
-  <div class="checkpoint">Checkpoint: everyone has a Trivy score. Wait for the trainer (Anil).</div>
+  <div class="step"><input type="checkbox" data-step="g4"><div class="body"><strong>Let AI write the workflow from the spec</strong><br>
+    In Copilot Chat, attach the spec file and send:
+    <pre class="cmd">Create .github/workflows/ci.yml that satisfies every requirement in this spec. Use the exact job names. Do not hardcode any secret.</pre>
+    Read the file before you accept it. Check P2, P5 and P9 yourself.</div></div>
 
-  <div class="step"><input type="checkbox" data-step="g4"><div class="body"><strong>Run the AI reviewer</strong>
-    <pre class="cmd">python lab2/ai_review.py</pre></div></div>
+  <div class="step"><input type="checkbox" data-step="g5"><div class="body"><strong>Commit, push, watch</strong>
+    The <code>test</code> job needs tests. This copies the ready-made test file if <code>api/tests</code> has none, then pushes:
+    <pre class="cmd">New-Item -ItemType Directory -Force api\tests | Out-Null
+if (-not (Test-Path api\tests\test_*.py)) { Copy-Item day1\labs\block2-pipeline\ready_made_tests\test_api.py api\tests\ }
+git add -A
+git commit -m "add ci pipeline"
+git push
+gh run watch</pre></div></div>
 
-  <div class="step"><input type="checkbox" data-step="g5"><div class="body"><strong>Score again</strong>
-    <pre class="cmd">python lab2/score.py</pre>
-    Paste into <b>Score after the AI review (with context)</b>. Before you move on, open each AI finding and check the file and line yourself: is it real?</div></div>
+  <div class="checkpoint">Checkpoint: everyone has a run started. Wait for the trainer (Anil). If your run is red, read the failing log first: <code>gh run view --log-failed</code>.</div>
 </section>
 
 <section id="solo">
   <h2>3. Solo challenge <span class="badge">30 min · you work alone</span></h2>
-  <p class="sub">Make the AI reviewer better by treating its prompt as a spec, and prove it with the score.</p>
+  <p class="sub">Get to a green run, prove your tests catch bugs, then add a gate that blocks.</p>
 
-  <div class="step"><input type="checkbox" data-step="s1"><div class="body"><strong>Take away the context</strong><br>
-    Run the reviewer on the diff only and score it. Use the <b>--no-context</b> box under <b>Paste and check</b>. Note what changed.</div></div>
+  <div class="step"><input type="checkbox" data-step="s1"><div class="body"><strong>Get a green run and verify it</strong><br>
+    Use the <b>B1</b>, <b>B2</b> and <b>B3</b> boxes under <b>Paste and check</b>. If a check fails, fix the pipeline with Copilot, push, and check again.</div></div>
 
-  <div class="step"><input type="checkbox" data-step="s2"><div class="body"><strong>Rewrite the reviewer prompt as a spec</strong><br>
-    Open <code>lab2/ai_review.py</code> and find the review prompt. Rewrite it with:
-    <ul>
-      <li>the allowed categories: <code>hardcoded-secret</code>, <code>injection</code>, <code>broken-access-control</code>, <code>iac-misconfig</code>, <code>logic-bug</code></li>
-      <li>required output for each finding: file, line, category, and the evidence from the code</li>
-      <li>a rule to report nothing rather than guess</li>
-    </ul></div></div>
+  <div class="step"><input type="checkbox" data-step="s2"><div class="body"><strong>Run the mutation check once</strong><br>
+    It runs against the tests in <code>api/tests</code> (the ready-made file was added in the guided lab if you had none).
+    <pre class="cmd">python day1/labs/block2-pipeline/mutation_check.py</pre>
+    Paste the output into <b>B4</b>.</div></div>
 
-  <div class="step"><input type="checkbox" data-step="s3"><div class="body"><strong>Run and score your version</strong><br>Use the <b>Solo</b> box. Compare it to your earlier scores in the result panel.</div></div>
+  <div class="step"><input type="checkbox" data-step="s3"><div class="body"><strong>Add a Trivy gate to the pipeline</strong><br>
+    Ask Copilot to add a step after <code>build</code> that scans the pushed image and fails on HIGH or CRITICAL findings.
+    Push it in a way that turns the run <b>red</b> once (for example tighten the severity or point the scan at a bad tag). Read the log, fix it, push again until the run is <b>green</b>.</div></div>
 
-  <div class="step"><input type="checkbox" data-step="s4"><div class="body"><strong>Reveal the answer key</strong><br>Only after all four scores are pasted. Use the last box and write your verdict.</div></div>
+  <div class="step"><input type="checkbox" data-step="s4"><div class="body"><strong>Show the red then green history</strong><br>Use the <b>Solo</b> box.</div></div>
 
-  <div class="note"><b>Stretch:</b> run your reviewer three times. Do the findings change between runs? What does that say about using a single AI run as your only review?</div>
+  <div class="note"><b>Stretch:</b> raise the coverage gate from 80 to 90 (<code>--cov-fail-under=90</code>). Do your tests pass? Use <code>--cov-report=term-missing</code> to see which lines are not covered.</div>
 </section>
 
 <section id="check">
@@ -213,87 +221,98 @@ function parseJson(t) {
 }
 </script>
 <script>window.LAB = {
-  id: 'd1-b3',
-  short: 'Block 3: AI review vs scanner on a seeded PR',
+  id: 'd1-b2',
+  short: 'Block 2: Let the pipeline ship it',
   checks: [
     {
-      id: 'c1', points: 20, title: 'Score after the Trivy scan',
-      prompt: 'Score what the scanner found.',
-      cmd: 'python lab2/score.py',
-      validate: scoreCheck('Trivy stage score')
-    },
-    {
-      id: 'c2', points: 20, title: 'Score after the AI review (with context)',
-      prompt: 'Score what the AI reviewer found when it can see the full files.',
-      cmd: 'python lab2/score.py',
-      validate: scoreCheck('AI review score')
-    },
-    {
-      id: 'c3', points: 20, title: 'Score after the AI review with --no-context',
-      prompt: 'Run the reviewer on the diff only, then score again.',
-      cmd: 'python lab2/ai_review.py --no-context\npython lab2/score.py',
-      validate: scoreCheck('No-context score')
-    },
-    {
-      id: 'c4', points: 20, title: 'Solo: score after your own reviewer spec',
-      prompt: 'Run your rewritten reviewer and score it. Do not run the reveal command until all four scores are in.',
-      cmd: 'python lab2/ai_review.py\npython lab2/score.py',
-      validate: scoreCheck('Your reviewer spec score')
-    },
-    {
-      id: 'c5', points: 20, title: 'Your verdict after the reveal',
-      prompt: 'Run the reveal command below and read the key. Paste the reveal output, then add a new line that starts with <code>Verdict:</code> and write two or three sentences: which issue did the tools miss or get wrong, and what would you do about it in a real review?',
-      cmd: 'python lab2/score.py --reveal',
+      id: 'c1', points: 20, title: 'B1: latest run is green',
+      prompt: 'List the latest workflow run as JSON.',
+      cmd: 'gh run list --limit 1 --json status,conclusion,headSha,displayTitle',
       validate: function (t) {
-        var m = t.match(/verdict\s*:\s*([\s\S]+)$/i);
-        if (!m) return { ok: false, msg: 'Add a line starting with "Verdict:" after the reveal output, then write your two or three sentences.' };
-        var words = m[1].split(/\s+/).filter(Boolean).length;
-        if (words < 12) return { ok: false, msg: 'Write at least two sentences after "Verdict:" (about ' + words + ' words so far).' };
-        return { ok: true, msg: 'Verdict recorded.' };
+        var runs = parseJson(t);
+        if (!runs.length) return { ok: false, msg: 'No runs found. Push to main so the workflow starts.' };
+        var r = runs[0];
+        if (r.status !== 'completed') return { ok: false, msg: 'Run is still ' + r.status + '. Wait with gh run watch, then paste again.' };
+        if (r.conclusion !== 'success') return { ok: false, msg: 'Latest run ended as ' + r.conclusion + '. Open the failing job log with gh run view --log-failed.' };
+        return { ok: true, msg: 'Latest run succeeded (' + String(r.headSha).slice(0, 7) + ').' };
+      }
+    },
+    {
+      id: 'c2', points: 20, title: 'B2: lint, test, build, deploy all passed',
+      prompt: 'Show the result of every job in the latest run.',
+      cmd: '$id = gh run list --limit 1 --json databaseId -q ".[0].databaseId"\ngh run view $id --json jobs -q "[.jobs[] | {name: .name, conclusion: .conclusion}]"',
+      validate: function (t) {
+        var jobs = parseJson(t), need = ['lint', 'test', 'build', 'deploy'], missing = [], failed = [];
+        need.forEach(function (n) {
+          var j = jobs.filter(function (x) { return String(x.name).toLowerCase() === n; })[0];
+          if (!j) missing.push(n); else if (j.conclusion !== 'success') failed.push(n + ' (' + j.conclusion + ')');
+        });
+        if (missing.length) return { ok: false, msg: 'Job(s) not found: ' + missing.join(', ') + '. Job names must be exactly lint, test, build, deploy (requirement P2).' };
+        if (failed.length) return { ok: false, msg: 'Not successful: ' + failed.join(', ') + '.' };
+        return { ok: true, msg: 'All four jobs succeeded, in the required names.' };
+      }
+    },
+    {
+      id: 'c3', points: 20, title: 'B3: the cluster runs the pipeline\'s image',
+      prompt: 'Print the image(s) your deployment is running.',
+      cmd: 'kubectl -n $env:NAMESPACE get deploy -o jsonpath="{.items[*].spec.template.spec.containers[*].image}"',
+      validate: function (t) {
+        var imgs = t.split(/\s+/).filter(function (s) { return /shipwave-api/.test(s); });
+        if (!imgs.length) return { ok: false, msg: 'No shipwave-api image found in the output.' };
+        var tag = imgs[0].split(':').pop();
+        if (tag === 'latest') return { ok: false, msg: 'Tag is latest. The pipeline must tag with the commit SHA (P5).' };
+        if (!/^[0-9a-f]{7,40}$/.test(tag)) return { ok: false, msg: 'Tag "' + tag + '" is not a commit SHA. The cluster still runs the Block 1 image, so the deploy job has not replaced it.' };
+        return { ok: true, msg: 'Deployed tag ' + tag.slice(0, 7) + ' is a commit SHA.' };
+      }
+    },
+    {
+      id: 'c4', points: 20, title: 'B4: your tests catch broken code (mutation check)',
+      prompt: 'Run the mutation check once. It injects 6 known bugs and counts how many your tests catch.',
+      cmd: 'python day1/labs/block2-pipeline/mutation_check.py',
+      validate: function (t) {
+        var k = lastNumber(t, /(\d+)\s*\/\s*6\b/);
+        if (k == null) k = lastNumber(t, /killed\D{0,12}(\d+)/i);
+        if (k == null || k > 6) return { ok: false, msg: 'Could not find the "x/6" result. Paste the full output of the mutation check.' };
+        if (k === 6) return { ok: true, msg: 'All 6 mutants killed. Your tests assert real behaviour.' };
+        return { ok: false, earned: Math.round(20 * k / 6), msg: k + ' of 6 mutants killed. The survivors are bugs your tests would let into production. Add tests for them and run again.' };
+      }
+    },
+    {
+      id: 'c5', points: 20, title: 'Solo: a red run, then a green run',
+      prompt: 'List your last runs. Newest comes first, so a green run must appear above a red one.',
+      cmd: 'gh run list --limit 5 --json conclusion,headSha,displayTitle',
+      validate: function (t) {
+        var runs = parseJson(t), s = -1, f = -1;
+        runs.forEach(function (r, i) {
+          if (s < 0 && r.conclusion === 'success') s = i;
+          if (s >= 0 && i > s && f < 0 && r.conclusion === 'failure') f = i;
+        });
+        if (s < 0) return { ok: false, msg: 'No successful run in the list yet.' };
+        if (f < 0) return { ok: false, msg: 'No failed run below the green one. Add your gate, make it go red once, then fix it.' };
+        return { ok: true, msg: 'Red run then green run found: the gate really blocks, and you fixed it.' };
       }
     }
   ],
   quiz: [
     {
-      q: 'Which statement about a scanner like Trivy versus an AI reviewer is most accurate?',
-      options: ['The AI reviewer is always more accurate', 'A scanner is deterministic on known patterns; an AI reviewer understands context but can vary and be wrong', 'A scanner understands business logic better', 'They find exactly the same issues'],
+      q: 'Why does the pipeline tag images with the commit SHA instead of latest?',
+      options: ['SHA tags are smaller', 'You can trace what runs in the cluster to exact code and roll back to it', 'ACR rejects latest', 'It makes the build faster'],
       answer: 1,
-      why: 'Use them together: the scanner gives repeatable coverage of known patterns, the reviewer adds context, and neither replaces your own check.'
+      why: 'latest moves. A SHA ties the running image to one commit, so you can audit it and redeploy a known-good version.'
     },
     {
-      q: 'The scorer takes 5 points off for each false positive. What habit does that build?',
-      options: ['Ask the AI for more findings', 'Verify each AI finding before you act on it or report it', 'Never trust any AI output', 'Run the scan twice'],
+      q: 'The mutation check reports 4/6 killed. What does that mean?',
+      options: ['Your code has 2 bugs', 'Two injected bugs would pass your tests unnoticed', 'The pipeline will fail', 'Coverage is 67%'],
       answer: 1,
-      why: 'Unverified findings waste a reviewer\'s time and erode trust in the tool. Check the file and line before you accept a finding.'
+      why: 'Coverage says which lines ran. Mutation checking says whether your tests would notice a change. A suite can have high coverage and still miss bugs.'
     },
     {
-      q: 'You run the same AI review twice and get different findings. What does that tell you?',
-      options: ['The tool is broken', 'One run is not ground truth; score it against a checker and compare runs', 'You should pick the longer list', 'The scanner will behave the same way'],
+      q: 'Why run lint first and deploy last?',
+      options: ['Alphabetical order', 'Cheap, fast checks fail early, so you do not spend build and deploy time on bad code', 'Deploy needs a faster runner', 'GitHub requires it'],
       answer: 1,
-      why: 'Model output varies. That is why we score against a seeded answer key instead of trusting any single run.'
+      why: 'Fail fast and cheap. Each stage is a gate that only passes known-good work to the next, more expensive stage.'
     }
-  ],
-  derive: function (st) {
-    var ids = ['c1', 'c2', 'c3', 'c4'], names = ['Trivy', 'AI + context', 'AI no context', 'Your spec'], rows = '', txt = [], have = 0;
-    ids.forEach(function (id, i) {
-      var r = st.checks[id], s = (r && r.data) ? r.data.score : null;
-      rows += '<tr><td>' + names[i] + '</td><td>' + (s == null ? '-' : s) + '</td></tr>';
-      txt.push(names[i] + '=' + (s == null ? '-' : s));
-      if (s != null) have++;
-    });
-    if (!have) return { html: '', text: '' };
-    var msg = '', a = st.checks.c2, d = st.checks.c4;
-    if (a && a.data && d && d.data) {
-      var diff = d.data.score - a.data.score;
-      msg = diff > 0 ? 'Your reviewer spec beat the default run by ' + diff + ' points.' :
-        diff === 0 ? 'Your reviewer spec scored the same as the default run.' :
-        'Your reviewer spec scored ' + (-diff) + ' points lower than the default run. One run is noise: that is a result worth discussing.';
-    }
-    return {
-      html: '<table><tr><th>Stage</th><th>Score</th></tr>' + rows + '</table>' + (msg ? '<p>' + msg + '</p>' : ''),
-      text: 'Scores: ' + txt.join(' | ') + (msg ? '\n' + msg : '')
-    };
-  }
+  ]
 };
 </script>
 <script>(function () {

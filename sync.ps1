@@ -6,4 +6,4 @@ git fetch upstream
 git pull upstream main --no-rebase --no-edit
 if ($LASTEXITCODE -ne 0) { Write-Host "Merge stopped. Tell the trainer." -ForegroundColor Red; exit 1 }
 git push origin main
-Write-Host "`nSynced. Open the new day's folder, for example day2\index.html" -ForegroundColor Green
+Write-Host "`nSynced. Open the new day's folder, for example day2\content\index.html" -ForegroundColor Green
