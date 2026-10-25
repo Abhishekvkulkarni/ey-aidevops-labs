@@ -129,6 +129,17 @@ def r6(tpl, **_):
     return got, ("; ".join(notes) or "liveness and readiness on /health")
 
 
+def resolve_values(tpl, values):
+    """Replace {{ .Values.a.b }} with the leaf value found in values.yaml."""
+    if not tpl or not values:
+        return tpl
+    def sub(m):
+        leaf = m.group(1).split(".")[-1]
+        v = re.search(r"(?m)^\s*" + re.escape(leaf) + r":\s*[\"']?([^\s\"'#]+)", values)
+        return v.group(1) if v else m.group(0)
+    return re.sub(r"\{\{-?\s*\.Values\.([\w.]+)\s*-?\}\}", sub, tpl)
+
+
 def r7(df, tpl, values, **_):
     leaks = []
     for l in dockerfile_lines(df or ""):
@@ -136,12 +147,8 @@ def r7(df, tpl, values, **_):
             leaks.append("Dockerfile sets API_KEY")
     if values and re.search(r"(?i)api[_-]?key\s*:\s*\S", values):
         leaks.append("values.yaml holds an api key")
-    name_ok = tpl and (
-        "shipwave-secrets" in tpl
-        or (re.search(r"name:\s*\{\{\s*\.Values\.[\w.]*secret\w*\s*\}\}", tpl, re.I)
-            and values and re.search(r"(?i)secretName:\s*[\"']?shipwave-secrets", values))
-    )
-    ref = tpl and "secretKeyRef" in tpl and name_ok and re.search(r"key:\s*[\"']?api-key", tpl)
+    rtpl = resolve_values(tpl, values)
+    ref = rtpl and "secretKeyRef" in rtpl and "shipwave-secrets" in rtpl and re.search(r"key:\s*[\"']?api-key", rtpl)
     if leaks:
         return 0, "; ".join(leaks)
     if not ref:
