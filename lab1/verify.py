@@ -136,7 +136,12 @@ def r7(df, tpl, values, **_):
             leaks.append("Dockerfile sets API_KEY")
     if values and re.search(r"(?i)api[_-]?key\s*:\s*\S", values):
         leaks.append("values.yaml holds an api key")
-    ref = tpl and "secretKeyRef" in tpl and "shipwave-secrets" in tpl and re.search(r"key:\s*[\"']?api-key", tpl)
+    name_ok = tpl and (
+        "shipwave-secrets" in tpl
+        or (re.search(r"name:\s*\{\{\s*\.Values\.[\w.]*secret\w*\s*\}\}", tpl, re.I)
+            and values and re.search(r"(?i)secretName:\s*[\"']?shipwave-secrets", values))
+    )
+    ref = tpl and "secretKeyRef" in tpl and name_ok and re.search(r"key:\s*[\"']?api-key", tpl)
     if leaks:
         return 0, "; ".join(leaks)
     if not ref:
