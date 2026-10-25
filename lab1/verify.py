@@ -118,11 +118,13 @@ def r5(tpl, values, **_):
     return (1, "requests and limits set") if ok else (0, "requests/limits for cpu and memory missing")
 
 
-def r6(tpl, **_):
+def r6(tpl, values=None, **_):
     if not tpl:
         return 0, "no API templates in helm/templates"
-    live, ready = "livenessProbe" in tpl, "readinessProbe" in tpl
-    path = "/health" in tpl
+    # probes may be defined in values.yaml and rendered into the template via toYaml
+    blob = tpl + ("\n" + values if values and ".Values" in tpl else "")
+    live, ready = "livenessProbe" in blob, "readinessProbe" in blob
+    path = "/health" in blob
     got, notes = 0.0, []
     for flag, w, msg in ((live, 0.35, "no livenessProbe"), (ready, 0.35, "no readinessProbe"), (path, 0.3, "probes do not use /health")):
         if flag:
@@ -170,7 +172,7 @@ def r8(tpl, values, **_):
         got += 0.4
     else:
         notes.append("values.yaml has no image repository and tag")
-    if tpl and re.search(r"\.Values\.[\w.]*image", tpl):
+    if tpl and re.search(r"\.Values\.[\w.]*(image|repository|tag)", tpl, re.I):
         got += 0.3
     else:
         notes.append("templates do not read the image from values")

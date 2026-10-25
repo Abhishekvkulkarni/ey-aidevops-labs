@@ -133,25 +133,28 @@ if (-not (git config user.email)) { git config --global user.email "$env:USERNAM
     You should see your namespace, for example <code>ff-u07</code>.</div></div>
 
   <div class="step"><input type="checkbox" data-step="g2"><div class="body"><strong>Ask with a basic prompt</strong><br>
-    Open the <code>ey-aidevops-labs</code> folder in VS Code. In Copilot Chat (agent mode) send exactly:
+    First hide the spec, so the AI cannot read it. In your PowerShell terminal:
+    <pre class="cmd">Start-BasicRun</pre>
+    Open the <code>ey-aidevops-labs</code> folder in VS Code. Open a <b>new</b> Copilot Chat (agent mode) and send exactly:
     <pre class="cmd">Containerize and deploy the Shipwave API to Kubernetes with Helm.</pre>
     Accept the files it creates (Dockerfile in <code>api/</code>, chart in <code>helm/</code>).</div></div>
 
   <div class="step"><input type="checkbox" data-step="g3"><div class="body"><strong>Score it</strong>
-    <pre class="cmd">python lab1/verify.py</pre>
-    Paste the output into <b>Score of the basic-prompt version</b> below. Then save this attempt:
-    <pre class="cmd">git add -A
-git commit -m "basic prompt version"</pre></div></div>
+    <pre class="cmd">Get-LabScore</pre>
+    Paste the output into <b>Score of the basic-prompt version</b> below. Do not run any Git commands: the next step saves this attempt for you.</div></div>
 
   <div class="checkpoint">Checkpoint: everyone has a basic-prompt score. Wait for the trainer (Anil) before moving on.</div>
 
   <div class="step"><input type="checkbox" data-step="g4"><div class="body"><strong>Ask again, with the spec</strong><br>
-    Open <code>spec/api-container-spec.md</code> and read the requirements. In Copilot Chat, attach the file and send:
-    <pre class="cmd">Implement this spec for the api service. Replace the Dockerfile and the chart. Do not skip any requirement, and list which acceptance checks you expect to pass.</pre></div></div>
+    Bring the spec back and reset your work:
+    <pre class="cmd">Start-SpecRun</pre>
+    Open <code>spec/api-container-spec.md</code> and read the requirements. Open a <b>new</b> Copilot Chat, attach that file (drag it into the chat) and send:
+    <pre class="cmd">Implement the attached spec (spec/api-container-spec.md) for the api service. Replace the Dockerfile and the chart. Do not skip any requirement, and list which acceptance checks you expect to pass.</pre></div></div>
 
   <div class="step"><input type="checkbox" data-step="g5"><div class="body"><strong>Score it again</strong>
-    <pre class="cmd">python lab1/verify.py</pre>
-    Paste into <b>Score of the spec-driven version</b>. Compare the two numbers in the result panel at the bottom.</div></div>
+    <pre class="cmd">Get-LabScore
+Show-Scores</pre>
+    Paste the output of <code>Get-LabScore</code> into <b>Score of the spec-driven version</b>. <code>Show-Scores</code> prints both numbers side by side. Compare them in the result panel at the bottom.</div></div>
 </section>
 
 <section id="solo">
@@ -236,13 +239,13 @@ function parseJson(t) {
     {
       id: 'c1', points: 10, title: 'Score of the basic-prompt version',
       prompt: 'Run the scorer on what the one-sentence prompt produced.',
-      cmd: 'python lab1/verify.py',
+      cmd: 'Get-LabScore',
       validate: scoreCheck('Basic prompt score')
     },
     {
       id: 'c2', points: 10, title: 'Score of the spec-driven version',
       prompt: 'Run the same scorer after the AI implemented the spec.',
-      cmd: 'python lab1/verify.py',
+      cmd: 'Get-LabScore',
       validate: scoreCheck('Spec-driven score')
     },
     {
