@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shipwave-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shipwave-api
+  template:
+    metadata:
+      labels:
+        app: shipwave-api
+    spec:
+      containers:
+        - name: api
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ .Values.api.service.targetPort }}
+          env:
+            - name: API_KEY
+              value: "{{ .Values.api.env.apiKey }}"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
