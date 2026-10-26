@@ -43,7 +43,7 @@ jobs:
 
       - name: Run tests
         working-directory: api
-        run: pytest tests
+        run: python -m pytest tests
 
   build:
     name: build
