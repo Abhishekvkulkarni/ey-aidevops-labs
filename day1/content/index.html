@@ -7,115 +7,301 @@
   --accent:#ffe600; --accent-ink:#2e2e38; --head:#2e2e38; --head-ink:#ffffff;
   --ok:#1b7f3b; --okbg:#e6f5ea; --bad:#b3261e; --badbg:#fdeceb; --warn:#8a5a00; --warnbg:#fff4d6;
   --code:#14141a; --codeink:#e8e8ee; --link:#1a56c4;
+  --a1:#dbe9fb; --a2:#e4f0e1; --a3:#fdf0d0; --a4:#f3dfd6;
 }
 @media (prefers-color-scheme: dark){
   :root{--bg:#17171c; --card:#22222a; --ink:#ececf1; --muted:#a2a2ae; --line:#3a3a46;
-    --okbg:#143323; --badbg:#3a1a18; --warnbg:#3a2e10; --ok:#5fd085; --bad:#ff8a80; --warn:#ffd27a; --link:#8ab4ff;}
+    --okbg:#143323; --badbg:#3a1a18; --warnbg:#3a2e10; --ok:#5fd085; --bad:#ff8a80; --warn:#ffd27a; --link:#8ab4ff;
+    --a1:#1d2c42; --a2:#1f3022; --a3:#3a3010; --a4:#3a2620;}
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
 a{color:var(--link)}
-header.top{background:var(--head);color:var(--head-ink);padding:22px 20px 18px;border-bottom:6px solid var(--accent)}
-header.top .wrap{max-width:900px;margin:0 auto}
+header.top{background:var(--head);color:var(--head-ink);padding:22px 20px 20px;border-bottom:6px solid var(--accent)}
+.wrap{max-width:1000px;margin:0 auto}
 header.top .kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
-header.top h1{margin:4px 0 6px;font-size:28px;line-height:1.25}
+header.top h1{margin:4px 0 6px;font-size:30px;line-height:1.2}
 header.top p{margin:0;color:#d6d6de}
 nav.bar{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line)}
-nav.bar .wrap{max-width:900px;margin:0 auto;padding:8px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-nav.bar a{font-size:14px;text-decoration:none;color:var(--ink);padding:2px 0;border-bottom:2px solid transparent}
-nav.bar a:hover{border-bottom-color:var(--accent)}
-.pbar{flex:1;min-width:120px;height:8px;background:var(--line);border-radius:4px;overflow:hidden}
-.pbar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
-.pct{font-size:13px;color:var(--muted);min-width:38px;text-align:right}
-main{max-width:900px;margin:0 auto;padding:18px 20px 80px}
-section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 22px;margin:18px 0}
-section>h2{margin:0 0 4px;font-size:21px}
-.badge{display:inline-block;font-size:12px;font-weight:600;background:var(--accent);color:var(--accent-ink);padding:2px 9px;border-radius:99px;margin-left:8px;vertical-align:middle}
-.sub{color:var(--muted);margin:0 0 12px;font-size:14px}
-h3{font-size:17px;margin:18px 0 6px}
+nav.bar .wrap{padding:6px 20px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+nav.bar a{font-size:14px;font-weight:600;text-decoration:none;color:var(--muted);padding:5px 12px;border-radius:99px;border:1px solid transparent}
+nav.bar a:hover{border-color:var(--line)}
+nav.bar a.on{background:var(--accent);color:var(--accent-ink)}
+nav.bar .alt{margin-left:auto;font:600 13px Consolas,monospace;color:var(--muted)}
+main{max-width:1000px;margin:0 auto;padding:10px 20px 80px}
+section.lvl{border:1px solid var(--line);border-radius:12px;margin:22px 0;padding:20px 24px;background:var(--card);position:relative;overflow:hidden}
+section.lvl::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--tint)}
+#l1{--tint:#6aa0e8}#l2{--tint:#7cc47a}#l3{--tint:#f0b429}#l4{--tint:#e0713f}
+.altchip{display:inline-block;font:700 13px Consolas,monospace;padding:2px 10px;border-radius:99px;background:var(--accent);color:var(--accent-ink)}
+section.lvl h2{margin:6px 0 2px;font-size:25px;line-height:1.25}
+.sub{color:var(--muted);margin:0 0 14px;font-size:15px}
+h3{font-size:17px;margin:16px 0 6px}
 code{font-family:Consolas,"Cascadia Mono",Menlo,monospace;font-size:.92em;background:rgba(127,127,127,.16);padding:1px 5px;border-radius:4px}
 pre{font-family:Consolas,"Cascadia Mono",Menlo,monospace;font-size:14px;background:var(--code);color:var(--codeink);padding:12px 14px;border-radius:8px;overflow:auto;margin:8px 0;line-height:1.5}
 pre code{background:none;padding:0;color:inherit}
 .cmdwrap{position:relative}
 .cmdwrap button.copy{position:absolute;top:6px;right:6px;font-size:12px;padding:3px 9px;border:1px solid #555;background:#2b2b35;color:#ddd;border-radius:5px;cursor:pointer}
-.cmdwrap button.copy:hover{background:#3b3b48}
-table{border-collapse:collapse;width:100%;margin:10px 0;font-size:15px}
-th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
-th{background:rgba(127,127,127,.12)}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:700px){.two{grid-template-columns:1fr}}
-.panel{border:1px solid var(--line);border-radius:8px;padding:10px 14px}
-.panel h4{margin:0 0 6px;font-size:15px}
-.panel.a{border-left:5px solid #c9a100}.panel.b{border-left:5px solid var(--ok)}
-.step{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px dashed var(--line)}
-.step:first-of-type{border-top:0}
-.step input{margin-top:5px;width:18px;height:18px;flex:none}
-.step .body{flex:1}
-.step.done .body>strong{text-decoration:line-through;color:var(--muted)}
-.checkpoint{background:var(--warnbg);color:var(--warn);border:1px solid var(--warn);border-radius:8px;padding:10px 14px;margin:14px 0;font-weight:600}
-.note{background:rgba(127,127,127,.1);border-left:4px solid var(--accent);padding:8px 12px;border-radius:0 6px 6px 0;margin:10px 0;font-size:15px}
-.chk{border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0}
-.chk h3{margin:0 0 2px}
-.chk .pts{font-size:12px;color:var(--muted);font-weight:400}
-.chk textarea{width:100%;min-height:110px;font:13px/1.4 Consolas,"Cascadia Mono",Menlo,monospace;background:var(--code);color:var(--codeink);border:1px solid var(--line);border-radius:6px;padding:8px;resize:vertical}
-button.btn{font:600 14px system-ui,sans-serif;padding:7px 14px;border-radius:6px;border:1px solid var(--accent-ink);background:var(--accent);color:var(--accent-ink);cursor:pointer;margin:6px 8px 0 0}
+.note{background:rgba(127,127,127,.1);border-left:4px solid var(--accent);padding:8px 12px;border-radius:0 6px 6px 0;margin:12px 0;font-size:15.5px}
+button.btn,a.btn{display:inline-block;font:600 15px system-ui,sans-serif;padding:9px 18px;border-radius:8px;border:1px solid var(--accent-ink);background:var(--accent);color:var(--accent-ink);cursor:pointer;text-decoration:none;margin-top:10px}
 button.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-button.btn:hover{filter:brightness(.95)}
-.res{margin-top:8px;padding:8px 12px;border-radius:6px;font-size:14.5px;display:none}
-.res.ok{display:block;background:var(--okbg);color:var(--ok)}
-.res.bad{display:block;background:var(--badbg);color:var(--bad)}
-.res.part{display:block;background:var(--warnbg);color:var(--warn)}
-.q{margin:14px 0;padding:10px 14px;border:1px solid var(--line);border-radius:8px}
-.q p{margin:0 0 6px;font-weight:600}
-.q label{display:block;padding:3px 0;cursor:pointer}
-.q .why{display:none;margin-top:6px;font-size:14.5px;padding:6px 10px;border-radius:6px}
-.q.right .why{display:block;background:var(--okbg);color:var(--ok)}
-.q.wrong .why{display:block;background:var(--badbg);color:var(--bad)}
-.summary textarea{width:100%;min-height:170px;font:13px/1.45 Consolas,"Cascadia Mono",Menlo,monospace;background:var(--code);color:var(--codeink);border:1px solid var(--line);border-radius:6px;padding:10px}
-.who{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.who input{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);width:120px}
-.big{font-size:30px;font-weight:700}
-.derive{margin:10px 0;padding:10px 14px;border:1px dashed var(--line);border-radius:8px}
-footer{max-width:900px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font-size:13px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;color:var(--ink);display:block}
-.card:hover{border-color:var(--accent-ink);box-shadow:0 2px 0 var(--accent)}
-.card b{display:block;font-size:18px;margin:2px 0}
-.card small{color:var(--muted)}
+button.btn:hover,a.btn:hover{filter:brightness(.95)}
+/* ladder in hero */
+.ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+@media(max-width:760px){.ladder{grid-template-columns:1fr 1fr}}
+.rung{all:unset;box-sizing:border-box;cursor:pointer;border-radius:10px;padding:10px 12px;color:#1f1f26;display:block}
+.rung:focus-visible{outline:3px solid var(--accent)}
+.rung:hover{transform:translateY(2px)}
+.rung b{display:block;font:700 18px Consolas,monospace}
+.rung span{font-size:14px;line-height:1.3;display:block}
+.rung:nth-child(1){background:#bcd6f7}.rung:nth-child(2){background:#c6e3c3}.rung:nth-child(3){background:#f8dd9a}.rung:nth-child(4){background:#f1b79c}
+/* 10k */
+.ideas{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:12px 0}
+.idea{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--a1)}
+.idea b{display:block;font-size:18px;margin-bottom:2px}
+.idea small{color:var(--muted);font-size:14.5px}
+.journey{display:flex;gap:0;margin:16px 0 4px;flex-wrap:wrap}
+.node{all:unset;box-sizing:border-box;cursor:pointer;flex:1;min-width:130px;text-align:center;padding:12px 8px;background:var(--a2);border:1px solid var(--line);position:relative;margin-right:-1px}
+.node:first-child{border-radius:10px 0 0 10px}.node:last-child{border-radius:0 10px 10px 0}
+.node:focus-visible{outline:3px solid var(--accent);z-index:2}
+.node small{display:block;color:var(--muted);font-size:13px}
+.node b{font-size:19px}
+.node.on{background:var(--accent);color:var(--accent-ink)}
+.node.on small{color:var(--accent-ink)}
+/* 5k */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
+.tab{all:unset;box-sizing:border-box;cursor:pointer;padding:7px 16px;border-radius:99px;border:1px solid var(--line);font-weight:600;font-size:15px}
+.tab:focus-visible{outline:3px solid var(--accent)}
+.tab.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent-ink)}
+.dayp{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:760px){.dayp{grid-template-columns:1fr}}
+.cell{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--a2)}
+.cell h4{margin:0 0 4px;font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.cell p{margin:0}
+.cell ul{margin:0;padding-left:20px}
+.cell.wide{grid-column:1/-1}
+.tools span{display:inline-block;margin:2px 4px 2px 0;padding:2px 10px;border-radius:99px;background:rgba(127,127,127,.18);font-size:14.5px}
+.daytitle{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.daytitle b{font-size:22px}.daytitle small{color:var(--muted)}
+/* 1k */
+.tl{display:flex;height:54px;border-radius:10px;overflow:hidden;border:1px solid var(--line);margin:10px 0}
+.seg{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:600;font-size:14px;border-right:1px solid var(--bg);padding:0 4px;color:#1f1f26}
+.seg:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.seg.on{box-shadow:inset 0 -5px 0 #1f1f26}
+.s-r{background:#e4e4e8}.s-b{background:#f8dd9a}.s-k{background:#d4d4d8;font-weight:500}
+.segnote{min-height:50px;background:rgba(127,127,127,.1);border-radius:8px;padding:10px 14px;font-size:15.5px}
+.anat{display:flex;height:22px;border-radius:6px;overflow:hidden;margin:6px 0;font:600 12px system-ui;color:#1f1f26}
+.anat i{display:flex;align-items:center;justify-content:center;font-style:normal}
+.blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:16px}
+.bcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--a3);display:flex;flex-direction:column}
+.bcard .no{font:700 13px Consolas,monospace;color:var(--muted)}
+.bcard h3{margin:2px 0 4px;font-size:19px}
+.bcard dl{margin:6px 0 10px;font-size:15px}
+.bcard dt{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:7px}
+.bcard dd{margin:0}
+.bcard a.btn{margin-top:auto;text-align:center}
+/* ground */
+.steps{counter-reset:s;list-style:none;padding:0;margin:8px 0}
+.steps li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px dashed var(--line)}
+.steps li:first-child{border-top:0}
+.steps li::before{content:counter(s);flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.steps li.done{opacity:.55}
+.steps li.done b{text-decoration:line-through}
+.steps input{margin-top:5px;width:18px;height:18px;flex:none}
+.steps .body{flex:1}
+.descend{display:flex;justify-content:flex-end}
+footer{max-width:1000px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font-size:13px}
 </style></head>
 <body>
 <header class="top"><div class="wrap">
 <div class="kicker">EY &middot; AI for DevOps &middot; Day 1 &middot; Mon 26 Oct</div>
 <h1>Day 1: Build</h1>
-<p>Write specs, let AI build, then verify with numbers. Running example: <b>Shipwave</b>, a supply-chain SaaS.</p></div></header>
+<p>Write specs, let AI build, then verify with numbers. Today we descend from 10,000 ft to ground level. Click a level to jump.</p>
+<div class="ladder" role="list">
+<button class="rung" data-go="l1"><b>10,000 ft</b><span>Why AI in DevOps</span></button>
+<button class="rung" data-go="l2"><b>5,000 ft</b><span>The 4-day map</span></button>
+<button class="rung" data-go="l3"><b>1,000 ft</b><span>Day 1: three blocks</span></button>
+<button class="rung" data-go="l4"><b>Ground</b><span>Your VM, Block 1</span></button>
+</div></div></header>
+
+<nav class="bar"><div class="wrap">
+<a href="#l1" data-n="l1">10,000 ft</a><a href="#l2" data-n="l2">5,000 ft</a><a href="#l3" data-n="l3">1,000 ft</a><a href="#l4" data-n="l4">Ground</a>
+<span class="alt" id="alt">10,000 ft</span>
+</div></nav>
+
 <main>
-<section>
-<h2>Today's three blocks</h2>
-<p class="sub">Each block: concept (10 min), guided lab (25), solo challenge (30), debrief (5).</p>
-<div class="cards">
-<a class="card" href="day1-block1-spec-vs-prompt.html"><small>Block 1</small><b>Spec vs prompt: ship the Shipwave API</b><small>Same AI, same app, two ways of asking. Score both.</small></a>
-<a class="card" href="day1-block2-pipeline.html"><small>Block 2</small><b>Let the pipeline ship it</b><small>Write a pipeline spec, let AI write the YAML, then prove it works.</small></a>
-<a class="card" href="day1-block3-ai-review-vs-scanner.html"><small>Block 3</small><b>AI review vs scanner</b><small>Two reviewers, one seeded PR. Who catches what?</small></a>
+
+<!-- 10,000 ft -->
+<section class="lvl" id="l1">
+<span class="altchip">10,000 ft</span>
+<h2>AI writes fast. Who checks?</h2>
+<p class="sub">The big picture. Three ideas carry all four days.</p>
+<div class="ideas">
+<div class="idea"><b>Draft with AI</b><small>Containers, pipelines, tests, runbooks: AI gives a first version in seconds.</small></div>
+<div class="idea"><b>Verify with numbers</b><small>Every lab has a checker. The AI never grades itself.</small></div>
+<div class="idea"><b>Specs beat prompts</b><small>Clear requirements in, reliable output out. You prove it today.</small></div>
 </div>
+<h3>The journey: tap a day</h3>
+<div class="journey" id="journey">
+<button class="node on" data-day="0"><small>Day 1 &middot; Mon</small><b>Build</b></button>
+<button class="node" data-day="1"><small>Day 2 &middot; Tue</small><b>Ship</b></button>
+<button class="node" data-day="2"><small>Day 3 &middot; Wed</small><b>Operate</b></button>
+<button class="node" data-day="3"><small>Day 4 &middot; Thu</small><b>Automate</b></button>
+</div>
+<div class="note"><b>Each day, same rhythm:</b> explain a little, do a lot. About 25% trainer talk, 75% your hands on the keyboard. No slides.</div>
+<div class="descend"><button class="btn" data-go="l2">Descend to 5,000 ft &darr;</button></div>
 </section>
-<section>
-<h2>Before you start</h2>
-<ul>
-<li><b>Get the code (once), in PowerShell on your lab VM.</b> Fork and clone the repo, then open <code>day1\content\index.html</code> from that folder:
-<pre>gh auth login
+
+<!-- 5,000 ft -->
+<section class="lvl" id="l2">
+<span class="altchip">5,000 ft</span>
+<h2>Four days, four jobs</h2>
+<p class="sub">Pick a day to see the tool, the problem it solves, what you walk away with, and what you learn.</p>
+<div class="tabs" id="tabs" role="tablist">
+<button class="tab on" data-day="0">Day 1 &middot; Build</button>
+<button class="tab" data-day="1">Day 2 &middot; Ship</button>
+<button class="tab" data-day="2">Day 3 &middot; Operate</button>
+<button class="tab" data-day="3">Day 4 &middot; Automate</button>
+</div>
+<div id="daypanel"></div>
+<div class="note">Day 2 to 4 pages arrive each morning when you run <code>.\sync.ps1</code>.</div>
+<div class="descend"><button class="btn" data-go="l3">Descend to 1,000 ft &darr;</button></div>
+</section>
+
+<!-- 1,000 ft -->
+<section class="lvl" id="l3">
+<span class="altchip">1,000 ft</span>
+<h2>Today: Build, in three blocks</h2>
+<p class="sub">09:00 to 13:00 IST. Tap a slot.</p>
+<div class="tl" id="tl">
+<button class="seg s-r" style="flex:10" data-i="0">Recap</button>
+<button class="seg s-b" style="flex:70" data-i="1">Block 1</button>
+<button class="seg s-b" style="flex:70" data-i="2">Block 2</button>
+<button class="seg s-k" style="flex:20" data-i="3">Break</button>
+<button class="seg s-b" style="flex:70" data-i="4">Block 3</button>
+</div>
+<div class="segnote" id="segnote">Tap a slot above.</div>
+<h3>Inside every block (70 min)</h3>
+<div class="anat" aria-label="10 min concept, 25 min guided lab, 30 min solo challenge, 5 min debrief">
+<i style="flex:10;background:#bcd6f7">10</i><i style="flex:25;background:#c6e3c3">25</i><i style="flex:30;background:#f8dd9a">30</i><i style="flex:5;background:#f1b79c">5</i></div>
+<small style="color:var(--muted)">Concept 10 &middot; Guided lab 25 &middot; Solo challenge 30 &middot; Debrief 5 (with a short quiz)</small>
+
+<div class="blocks">
+<div class="bcard"><span class="no">BLOCK 1</span><h3>Spec vs prompt: ship the Shipwave API</h3>
+<dl><dt>Tool</dt><dd>Copilot, Docker, Helm, Trivy, <code>verify.py</code></dd>
+<dt>Problem we solve</dt><dd>A one-line prompt gives a container that builds, but is it safe?</dd>
+<dt>Outcome</dt><dd>Same app, two ways of asking, both scored.</dd>
+<dt>You learn</dt><dd>Write a spec with numbered requirements and acceptance checks.</dd></dl>
+<a class="btn" href="day1-block1-spec-vs-prompt.html">Open Block 1 &rarr;</a></div>
+
+<div class="bcard"><span class="no">BLOCK 2</span><h3>Let the pipeline ship it</h3>
+<dl><dt>Tool</dt><dd>GitHub Actions, Copilot, <code>mutation_check.py</code></dd>
+<dt>Problem we solve</dt><dd>AI-written YAML looks right. Does it really lint, test, build and deploy?</dd>
+<dt>Outcome</dt><dd>A pipeline on your fork, proven by a test that must fail when the code is broken.</dd>
+<dt>You learn</dt><dd>Spec a pipeline, then prove it works.</dd></dl>
+<a class="btn" href="day1-block2-pipeline.html">Open Block 2 &rarr;</a></div>
+
+<div class="bcard"><span class="no">BLOCK 3</span><h3>AI review vs scanner</h3>
+<dl><dt>Tool</dt><dd>Model review script, Trivy, <code>score.py</code></dd>
+<dt>Problem we solve</dt><dd>Which reviewer catches which bug: the AI or the scanner?</dd>
+<dt>Outcome</dt><dd>Both scored on one seeded pull request with 5 planted issues.</dd>
+<dt>You learn</dt><dd>Use AI and scanners together, and read precision and recall.</dd></dl>
+<a class="btn" href="day1-block3-ai-review-vs-scanner.html">Open Block 3 &rarr;</a></div>
+</div>
+<div class="descend"><button class="btn" data-go="l4">Descend to ground level &darr;</button></div>
+</section>
+
+<!-- Ground -->
+<section class="lvl" id="l4">
+<span class="altchip">Ground level</span>
+<h2>Your VM. Your keyboard. Start.</h2>
+<p class="sub">Do these once. Tick as you go.</p>
+<ol class="steps" id="steps">
+<li><input type="checkbox"><div class="body"><b>Get the code (once)</b>, in PowerShell on your lab VM. Fork and clone the repo, then open <code>day1\content\index.html</code> from that folder:
+<div class="cmdwrap"><pre><code>gh auth login
 cd C:\EYLAB
 gh repo fork askanilkumar/ey-aidevops-labs --clone
 cd ey-aidevops-labs
-gh repo set-default (git remote get-url origin)</pre></li>
-<li><b>Load your lab card (every new terminal).</b> After the code is cloned, run <code>. C:\EYLAB\ey-aidevops-labs\lab-env.ps1</code> in PowerShell. It reads <code>C:\EYLAB\lab-card.json</code>, which the trainer placed on your VM.</li>
-<li><b>Each morning:</b> run <code>.\sync.ps1</code> in the repo folder to get that day's pages.</li>
-<li>Open these pages from your cloned or downloaded folder (double-click the file). Do not open them on github.com: that shows the source, not the page. Use any browser. Copy commands with the Copy button.</li>
-<li>After each command, paste the output into the page and press <b>Check</b>. The page scores it instantly, in your browser.</li>
-<li>At the end of each page, press <b>Copy my result</b> and paste it in the call chat.</li>
-</ul>
+gh repo set-default (git remote get-url origin)</code></pre><button class="copy">Copy</button></div></div></li>
+<li><input type="checkbox"><div class="body"><b>Load your lab card (every new terminal).</b> After the code is cloned, run:
+<div class="cmdwrap"><pre><code>. C:\EYLAB\ey-aidevops-labs\lab-env.ps1</code></pre><button class="copy">Copy</button></div>
+It reads <code>C:\EYLAB\lab-card.json</code>, which the trainer placed on your VM.</div></li>
+<li><input type="checkbox"><div class="body"><b>Each morning:</b> run <code>.\sync.ps1</code> in the repo folder to get that day's pages.</div></li>
+<li><input type="checkbox"><div class="body"><b>Open pages by double-click</b> from your cloned folder, not on github.com (that shows source, not the page). Any browser.</div></li>
+</ol>
+<div class="note"><b>How every lab page works:</b> run a command, paste the output into the page, press <b>Check</b>. It scores in your browser. At the end press <b>Copy my result</b> and paste it in the call chat.</div>
 <div class="note"><b>Rule of the day:</b> trust but verify, with numbers. The AI does not grade itself.</div>
+<a class="btn" href="day1-block1-spec-vs-prompt.html">Start Block 1 &rarr;</a>
 </section>
+
 </main>
 <footer>Trainer: Anil</footer>
+
+<script>
+(function(){
+var DAYS=[
+{t:"Day 1 &middot; Build",d:"Mon 26 Oct",
+ tools:["VS Code + Copilot","Docker","Helm","GitHub Actions","Trivy"],
+ prob:"AI output looks right but is not proven. Containers, pipelines and PRs need checking.",
+ out:"Shipwave API containerized and deployed, a pipeline that ships it, and a PR reviewed by AI and scanner.",
+ learn:["Spec-driven vs basic prompting","Prove a pipeline works, not just runs","AI review vs scanner: who catches what"]},
+{t:"Day 2 &middot; Ship",d:"Tue 27 Oct",
+ tools:["GitHub Actions","pytest","Copilot","Foundry model"],
+ prob:"Thin tests, slow CI failure diagnosis, release notes written by hand.",
+ out:"AI-generated tests that are checked, a failed CI run diagnosed, and a release notes draft.",
+ learn:["Generate tests, then measure them","CI failure root cause with AI","Release notes and docs, quick win"],
+ plan:true},
+{t:"Day 3 &middot; Operate",d:"Wed 28 Oct",
+ tools:["kubectl","Prometheus / Grafana","Azure Monitor","Log Analytics"],
+ prob:"Incidents at 3 am and alert floods: too much noise, too little time.",
+ out:"An incident triaged from logs, related alerts grouped, and a clean incident summary.",
+ learn:["Log triage and root cause with AI","Cut alert noise by correlation","Write the incident summary"],
+ plan:true},
+{t:"Day 4 &middot; Automate",d:"Thu 29 Oct",
+ tools:["Incident agent","kubectl","MCP (short demo)","Cloud cost data"],
+ prob:"Repetitive toil and cloud cost sprawl. Can AI act, with a human in control?",
+ out:"A ready-made agent investigates a broken deploy, waits for your approval, rolls back and logs it. Then you extend it.",
+ learn:["Agent with an approval gate","Cost (FinOps) analysis with AI","Capstone and readouts"],
+ plan:true}];
+var SEG=[
+ "<b>09:00 &middot; Recap (10 min).</b> Where we are, how the day works, the lab setup.",
+ "<b>09:10 &middot; Block 1 (70 min).</b> Spec vs prompt: ship the Shipwave API.",
+ "<b>10:20 &middot; Block 2 (70 min).</b> Let the pipeline ship it.",
+ "<b>11:30 &middot; Break (20 min).</b> Stretch, then back for the last block.",
+ "<b>11:50 &middot; Block 3 (70 min).</b> AI review vs scanner. Ends 13:00."];
+function $(s,r){return (r||document).querySelector(s)}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+function go(id){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})}
+$$("[data-go]").forEach(function(b){b.addEventListener("click",function(){go(b.getAttribute("data-go"))})});
+function showDay(i){
+  var D=DAYS[i];
+  $$("#tabs .tab").forEach(function(t,k){t.classList.toggle("on",k===i)});
+  $$("#journey .node").forEach(function(t,k){t.classList.toggle("on",k===i)});
+  var h='<div class="daytitle"><b>'+D.t+'</b><small>'+D.d+'</small></div><div class="dayp">';
+  h+='<div class="cell tools"><h4>Tool'+(D.plan?' (planned)':'')+'</h4>'+D.tools.map(function(x){return '<span>'+x+'</span>'}).join("")+'</div>';
+  h+='<div class="cell"><h4>Problem we solve</h4><p>'+D.prob+'</p></div>';
+  h+='<div class="cell"><h4>Outcome</h4><p>'+D.out+'</p></div>';
+  h+='<div class="cell"><h4>You will learn</h4><ul>'+D.learn.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul></div></div>';
+  $("#daypanel").innerHTML=h;
+}
+$$("#tabs .tab").forEach(function(t,k){t.addEventListener("click",function(){showDay(k)})});
+$$("#journey .node").forEach(function(t,k){t.addEventListener("click",function(){showDay(k);go("l2")})});
+showDay(0);
+$$("#tl .seg").forEach(function(s){s.addEventListener("click",function(){
+  $$("#tl .seg").forEach(function(x){x.classList.remove("on")});s.classList.add("on");
+  $("#segnote").innerHTML=SEG[+s.getAttribute("data-i")]})});
+$$(".cmdwrap").forEach(function(w){var b=$("button.copy",w),c=$("code",w);b.addEventListener("click",function(){
+  var t=c.textContent,ok=function(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy"},1200)};
+  try{navigator.clipboard.writeText(t).then(ok,function(){fb()})}catch(e){fb()}
+  function fb(){var r=document.createRange();r.selectNodeContents(c);var s=getSelection();s.removeAllRanges();s.addRange(r);try{document.execCommand("copy");ok()}catch(e){}}})});
+$$("#steps input").forEach(function(c){c.addEventListener("change",function(){c.parentNode.classList.toggle("done",c.checked)})});
+var NAMES={l1:"10,000 ft",l2:"5,000 ft",l3:"1,000 ft",l4:"Ground level"};
+function setNav(id){$$("nav.bar a").forEach(function(a){a.classList.toggle("on",a.getAttribute("data-n")===id)});$("#alt").textContent=NAMES[id]}
+setNav("l1");
+if("IntersectionObserver" in window){
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)setNav(e.target.id)})},{rootMargin:"-30% 0px -60% 0px"});
+  $$("section.lvl").forEach(function(s){io.observe(s)});
+}
+})();
+</script>
 </body></html>

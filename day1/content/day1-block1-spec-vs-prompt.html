@@ -120,11 +120,22 @@ footer{max-width:900px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font
 </section>
 
 <section id="guided">
-  <h2>2. Guided lab <span class="badge">25 min · follow along</span></h2>
+  <h2>2. Guided lab <span class="badge">35 min · follow along</span></h2>
   <p class="sub">Goal: get two scores for the same service, one from a basic prompt and one from a spec.</p>
 
+  <div class="note"><b>How this lab works.</b> You ask the AI twice for the same thing and score both answers. The spec and the scorer are <b>not in your folder at the start</b>, on purpose: if the AI could read them during the basic attempt, the comparison would be unfair.
+  At the checkpoint the trainer (Anil) copies two files, <code>verify.py</code> and <code>api-container-spec.md</code>, into <code>day1/labs/block1-spec-vs-prompt/</code> and pushes them to GitHub. You receive them with <code>.\sync.ps1</code>.
+  Start a <b>new</b> Copilot chat for each attempt, so the second attempt cannot see the first.</div>
+
+  <div class="step"><input type="checkbox" data-step="gd"><div class="body"><strong>Start the Docker install (once per VM, about 10 minutes)</strong><br>
+    Right-click PowerShell, choose <b>Run as administrator</b>, then:
+    <pre class="cmd">cd C:\EYLAB\ey-aidevops-labs
+powershell -ExecutionPolicy Bypass -File .\install-docker.ps1</pre>
+    If it says the VM must restart, restart it, open PowerShell as administrator again and run the same two lines again. At the end check with <code>docker version</code>.
+    You need Docker later (solo challenge). Start it now and carry on with the next step while it runs.</div></div>
+
   <div class="step"><input type="checkbox" data-step="g1"><div class="body"><strong>Open the repo and load your lab card</strong><br>
-    In a PowerShell terminal on your VM:
+    In a <b>normal</b> PowerShell terminal on your VM:
     <pre class="cmd">. C:\EYLAB\ey-aidevops-labs\lab-env.ps1
 cd C:\EYLAB\ey-aidevops-labs
 echo $env:NAMESPACE
@@ -133,28 +144,30 @@ if (-not (git config user.email)) { git config --global user.email "$env:USERNAM
     You should see your namespace, for example <code>ff-u07</code>.</div></div>
 
   <div class="step"><input type="checkbox" data-step="g2"><div class="body"><strong>Ask with a basic prompt</strong><br>
-    Open the <code>ey-aidevops-labs</code> folder in VS Code. In Copilot Chat (agent mode) send exactly:
+    Open the <code>ey-aidevops-labs</code> folder in VS Code. Open a <b>new</b> Copilot Chat (agent mode) and send exactly:
     <pre class="cmd">Containerize and deploy the Shipwave API to Kubernetes with Helm.</pre>
-    Accept the files it creates (Dockerfile in <code>api/</code>, chart in <code>helm/</code>). Your folder has no spec and no scorer yet. That is on purpose.</div></div>
+    Accept the files it creates (a Dockerfile in <code>api/</code>, a chart in <code>helm/</code>). Your folder has no spec and no scorer yet. That is on purpose.</div></div>
 
   <div class="step"><input type="checkbox" data-step="g3"><div class="body"><strong>Save this attempt</strong>
     <pre class="cmd">git add -A
 git commit -m "basic prompt version"</pre></div></div>
 
-  <div class="checkpoint">Checkpoint: everyone has saved a basic-prompt version. Wait for the trainer (Anil) to release the spec and the scorer.</div>
+  <div class="checkpoint">Checkpoint: everyone has saved a basic-prompt version. Wait. The trainer (Anil) now copies <code>verify.py</code> and <code>api-container-spec.md</code> into <code>day1/labs/block1-spec-vs-prompt/</code> and pushes them. Continue when he says go.</div>
 
   <div class="step"><input type="checkbox" data-step="g4"><div class="body"><strong>Get the spec and the scorer, then score the basic version</strong>
     <pre class="cmd">.\sync.ps1
 python day1/labs/block1-spec-vs-prompt/verify.py</pre>
-    Paste the output into <b>Score of the basic-prompt version</b> below.</div></div>
+    Two new files now appear in <code>day1/labs/block1-spec-vs-prompt/</code>. Paste the scorer output into <b>Score of the basic-prompt version</b> below. Expect a low score: read which checks failed.
+    If <code>sync.ps1</code> says it could not switch to main, your work is not saved: run the two Git commands from the previous step, then try again.</div></div>
 
   <div class="step"><input type="checkbox" data-step="g5"><div class="body"><strong>Ask again, with the spec</strong><br>
-    Open <code>day1/labs/block1-spec-vs-prompt/api-container-spec.md</code> and read the requirements. In Copilot Chat, attach the file and send:
-    <pre class="cmd">Implement this spec for the api service. Replace the Dockerfile and the chart. Do not skip any requirement, and list which acceptance checks you expect to pass.</pre></div></div>
+    Open <code>day1/labs/block1-spec-vs-prompt/api-container-spec.md</code> and read the requirements. Open a <b>new</b> Copilot Chat. Attach the spec: type <code>#</code> in the chat box, then <code>api-container-spec</code>, and pick the file (or drag the file into the chat box). A file chip appears above the text box. Then send:
+    <pre class="cmd">Implement this spec for the api service. Replace the Dockerfile and the chart. Do not skip any requirement, and list which acceptance checks you expect to pass.</pre>
+    Accept the files it creates.</div></div>
 
   <div class="step"><input type="checkbox" data-step="g6"><div class="body"><strong>Score it again</strong>
     <pre class="cmd">python day1/labs/block1-spec-vs-prompt/verify.py</pre>
-    Paste into <b>Score of the spec-driven version</b>. Compare the two numbers in the result panel at the bottom.</div></div>
+    Paste into <b>Score of the spec-driven version</b>. Expect a much higher score. If a check still fails, ask Copilot to fix that requirement and score again. Compare the two numbers in the result panel at the bottom.</div></div>
 </section>
 
 <section id="solo">
