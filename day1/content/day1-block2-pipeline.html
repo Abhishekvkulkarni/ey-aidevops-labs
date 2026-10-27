@@ -124,7 +124,7 @@ git push origin main</pre>
     <pre class="cmd">.\day1\labs\block2-pipeline\setup-github.ps1</pre></div></div>
 
   <div class="step"><input type="checkbox" data-step="g3"><div class="body"><strong>[g3] Read the pipeline spec</strong><br>
-    The trainer (Anil) has released the spec: run <code>.\sync.ps1</code>, then open <code>day1/labs/block2-pipeline/pipeline-spec.md</code>. Note requirements P2 (job names), P5 (tag) and P7 (secrets).<br><b>Did not finish Block 1?</b> Run <code>.\day1\labs\block2-pipeline\prereq.ps1</code> once. It adds the API secret and chart so the pipeline has something to deploy.</div></div>
+    The trainer (Anil) has released the spec: run <code>.\sync.ps1</code>, then open <code>day1/labs/block2-pipeline/pipeline-spec.md</code>. Note requirements P2 (job names), P5 (tag) and P7 (secrets).<br><b>No working chart from Block 1?</b> Run <code>.\day1\labs\block2-pipeline\prereq.ps1</code> (add <code>-Force</code> if <code>helm lint</code> fails on your own chart). It gives the pipeline a valid chart to deploy.</div></div>
 
   <div class="step"><input type="checkbox" data-step="g4"><div class="body"><strong>[g4] Let AI write the workflow from the spec</strong><br>
     In Copilot Chat, attach the spec file and send:
