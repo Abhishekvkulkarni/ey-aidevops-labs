@@ -18,6 +18,9 @@ $env:AZURE_OPENAI_ENDPOINT    = $card.openai_endpoint      # used by the ai_revi
 $env:AZURE_OPENAI_API_KEY     = $card.openai_key
 $env:AZURE_OPENAI_DEPLOYMENT  = $card.openai_deployment
 
+# gh must use YOUR fork (origin), not the trainer repo that sync.ps1 adds as 'upstream'
+try { $o = git -C 'C:\EYLAB\ey-aidevops-labs' remote get-url origin 2>$null; if ($o -match 'github\.com[:/]([^/\s]+/[^/\s]+?)(\.git)?$') { $env:GH_REPO = $Matches[1] } } catch {}
+
 # Docker (only if it was set up on this VM): refresh DOCKER_HOST, start the engine if it is down
 $ey = 'C:\ProgramData\EYLAB'
 if ((Test-Path "$ey\bin") -and ($env:Path -notlike "*$ey\bin*")) { $env:Path += ";$ey\bin" }

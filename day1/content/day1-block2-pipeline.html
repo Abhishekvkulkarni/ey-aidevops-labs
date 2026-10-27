@@ -120,11 +120,11 @@ git push origin main</pre>
     Open your fork on GitHub, go to the <b>Actions</b> tab and press <b>I understand my workflows, go ahead and enable them</b> (new forks start with Actions off). Push only <code>main</code> today, never other branches. Your fork is public: never print a secret or the kubeconfig in a workflow step.</div></div>
 
   <div class="step"><input type="checkbox" data-step="g2"><div class="body"><strong>[g2] Load the pipeline settings with the setup script</strong><br>
-    One script sets the GitHub variables and secrets the pipeline reads. You do not type any secret by hand.
+    One script sets the GitHub variables and secrets the pipeline reads. You do not type any secret by hand. It also checks your Block 1 chart and, if it does not work with the pipeline, saves yours and installs a working one.
     <pre class="cmd">.\day1\labs\block2-pipeline\setup-github.ps1</pre></div></div>
 
   <div class="step"><input type="checkbox" data-step="g3"><div class="body"><strong>[g3] Read the pipeline spec</strong><br>
-    The trainer (Anil) has released the spec: run <code>.\sync.ps1</code>, then open <code>day1/labs/block2-pipeline/pipeline-spec.md</code>. Note requirements P2 (job names), P5 (tag) and P7 (secrets).<br><b>No working chart from Block 1?</b> Run <code>.\day1\labs\block2-pipeline\prereq.ps1</code> (add <code>-Force</code> if <code>helm lint</code> fails on your own chart). It gives the pipeline a valid chart to deploy.</div></div>
+    The trainer (Anil) has released the spec: run <code>.\sync.ps1</code>, then open <code>day1/labs/block2-pipeline/pipeline-spec.md</code>. Note requirements P2 (job names), P5 (tag) and P7 (secrets).</div></div>
 
   <div class="step"><input type="checkbox" data-step="g4"><div class="body"><strong>[g4] Let AI write the workflow from the spec</strong><br>
     In Copilot Chat, attach the spec file and send:
@@ -138,6 +138,7 @@ if (-not (Test-Path api\tests\test_*.py)) { Copy-Item day1\labs\block2-pipeline\
 git add -A
 git commit -m "add ci pipeline"
 git push
+Start-Sleep 8
 gh run watch</pre></div></div>
 
   <div class="checkpoint">Checkpoint: everyone has a run started. Wait for the trainer (Anil). If your run is red, read the failing log first: <code>gh run view --log-failed</code>.</div>
@@ -152,12 +153,15 @@ gh run watch</pre></div></div>
 
   <div class="step"><input type="checkbox" data-step="s2"><div class="body"><strong>[s2] Run the mutation check once</strong><br>
     It runs against the tests in <code>api/tests</code> (the ready-made file was added in the guided lab if you had none).
+    First, once (installs pytest and the other lab packages):
+    <pre class="cmd">pip install -r lab-requirements.txt</pre>
+    Then run the check:
     <pre class="cmd">python day1/labs/block2-pipeline/mutation_check.py</pre>
     Paste the output into <b>B4</b>.</div></div>
 
   <div class="step"><input type="checkbox" data-step="s3"><div class="body"><strong>[s3] Add a Trivy gate to the pipeline</strong><br>
-    Ask Copilot to add a step after <code>build</code> that scans the pushed image and fails on HIGH or CRITICAL findings.
-    It may turn <b>red</b> by itself: the starting <code>api/requirements.txt</code> has an old <code>starlette</code> with known fixes. Read the log, then fix it: set <code>fastapi==0.162.0</code>, <code>starlette==1.10.0</code>, <code>uvicorn==0.54.0</code> in <code>api/requirements.txt</code>, push, and repeat until the run is <b>green</b>. If it stays green first time, tighten the severity once to see it block, then undo.</div></div>
+    Ask Copilot to add a step after <code>build</code> that scans the pushed image with Trivy and fails on HIGH or CRITICAL findings. Push it.<br>If the run goes <b>red</b>, let AI read the log. Get the failing lines:<pre class="cmd">$id = gh run list --limit 1 --json databaseId -q ".[0].databaseId"
+gh run view $id --log-failed | Select-Object -Last 60</pre>Paste them into Copilot Chat with: <code>Why did this CI step fail? Give me the smallest fix.</code> Judge its answer before you apply it. Push until the run is <b>green</b>.<br><b>Stuck?</b> Hints: an action tag must really exist (check: <code>gh api repos/aquasecurity/trivy-action/releases/latest --jq .tag_name</code>). Fail only on findings that have a fix (<code>ignore-unfixed: true</code>). If a Python package such as starlette is listed, upgrade it in <code>api/requirements.txt</code>: <code>fastapi==0.162.0</code>, <code>starlette==1.10.0</code>, <code>uvicorn==0.54.0</code>.</div></div>
 
   <div class="step"><input type="checkbox" data-step="s4"><div class="body"><strong>[s4] Show the red then green history</strong><br>Use the <b>Solo</b> box.</div></div>
 
