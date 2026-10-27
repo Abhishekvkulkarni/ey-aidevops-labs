@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lab 2: Why did CI fail?</title><style>
+:root{--bg:#fff;--fg:#1a1a1a;--mut:#555;--card:#f5f6f8;--ac:#0a5cc4;--ok:#0b7a3b;--bd:#d8dce2;--tk:#fff7e0}
+@media(prefers-color-scheme:dark){:root{--bg:#14161a;--fg:#ececec;--mut:#aab;--card:#1e2127;--ac:#6aa8ff;--ok:#4cc380;--bd:#333a44;--tk:#2b2615}}
+body{font-family:'Aptos Narrow',Aptos,Segoe UI,sans-serif;background:var(--bg);color:var(--fg);margin:0;line-height:1.5;font-size:18px}
+main{max-width:900px;margin:0 auto;padding:20px 16px 80px}
+h1{font-size:30px;margin:.2em 0}h2{font-size:24px;margin-top:1.6em}
+.nav a{color:var(--ac);margin-right:14px;text-decoration:none}
+.step{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px 16px;margin:14px 0}
+.tag{display:inline-block;font-weight:700;font-size:14px;border-radius:6px;padding:2px 8px;background:var(--ac);color:#fff;margin-bottom:6px}
+pre{background:#0f1115;color:#e8e8e8;padding:12px;border-radius:8px;overflow:auto;font-size:15px;white-space:pre-wrap;margin:8px 0;position:relative}
+button.cp{float:right;font-size:13px;margin-left:8px;cursor:pointer;border:1px solid var(--bd);border-radius:6px;padding:2px 8px;background:var(--card);color:var(--fg)}
+.think{border-left:5px solid var(--ac);padding:8px 14px;margin:14px 0;background:var(--card)}
+.takeaway{border:2px solid #e0a800;background:var(--tk);border-radius:10px;padding:12px 16px;margin:24px 0}
+.chk label{display:block;margin:6px 0;cursor:pointer}
+.sm{color:var(--mut);font-size:16px}
+</style></head><body><main><div class="nav"><a href="index.html">Day 2 home</a><a href="block1.html">1 Tests</a><a href="block2.html">2 CI failures</a><a href="block3.html">3 Release notes</a></div><h1>Lab 2: Why did CI fail?</h1><p><b>Goal:</b> use AI to find the <i>real</i> cause of a failed build, and not just make it green. About 30 minutes.</p>
+<p>Folder: <code>day2\block2</code>. Three failed builds. Each has a long log (<code>failureN-ci.log</code>) and the change that triggered it (<code>failureN-changes.diff</code>). Failure 2 also has its workflow file.</p>
+<p>Causes can be: <b>code</b> bug, <b>config</b> problem, <b>flaky</b> test, <b>dependency</b> change, or <b>infra</b> glitch.</p>
+<h2>Do each failure the same way</h2><div class="step"><span class="tag">📝 EDITOR</span><div>Open <code>failure1-ci.log</code>. It is 200+ lines. Do not read it all. Find the line that says FAILED.</div></div><div class="step"><span class="tag">💬 COPILOT CHAT</span><div>Give Copilot the log AND the change:</div><pre>Here is a failed CI run: #file:failure1-ci.log and the change that triggered it: #file:failure1-changes.diff
+1. What is the root cause? Quote the exact log line that proves it.
+2. Is it a code bug, config, flaky test, dependency or infra problem?
+3. What is the smallest fix?
+4. What would make you wrong?</pre></div><div class="think"><b>Predict first:</b> Before you read the answer, say out loud: which file do you suspect? Then compare.</div><div class="step"><span class="tag">📝 EDITOR</span><div>Check the quoted log line really exists in the log (Ctrl+F). If it does not, Copilot made it up. Tell it.</div></div><p>Repeat for <code>failure2</code> (also give it <code>#file:failure2-workflow.yml</code>) and <code>failure3</code>.</p>
+<p class="sm">Failure 3: run-to-run it passes and fails on the same code. What does that tell you? Do not accept "add a retry" or "skip the test" as the fix.</p>
+<h2>Check yourself</h2><div class="chk"><label><input type="checkbox" data-k="0"> Failure 1: I found the one-character change that broke it</label><label><input type="checkbox" data-k="1"> Failure 2: I found what was missing and where it must be set</label><label><input type="checkbox" data-k="2"> Failure 3: I can explain why it is flaky and why a retry is a bad fix</label><label><input type="checkbox" data-k="3"> I verified at least one quoted log line against the real log</label></div><div class="takeaway"><b>⭐ Takeaway</b><p>CI logs are 95% noise. <b>Ask the AI for the proof line, then check it yourself.</b> A confident wrong cause is worse than no answer. The change that triggered the build is often not the one that broke it.</p>
+<p>Reusable prompt:</p><pre>Here is a failed CI run: #file:LOG and the change: #file:DIFF
+1. Root cause, quoting the exact log line.
+2. Class: code / config / flaky / dependency / infra.
+3. Smallest fix.
+4. What evidence would prove you wrong?</pre></div></main><script>
+document.querySelectorAll('pre').forEach(p=>{const b=document.createElement('button');b.className='cp';b.textContent='Copy';b.onclick=()=>{navigator.clipboard.writeText(p.innerText.replace(/^Copy\n?/,'')).then(()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1500)})};p.prepend(b)});
+document.querySelectorAll('.chk input').forEach(c=>{const k='d2-'+location.pathname+c.dataset.k;try{c.checked=localStorage.getItem(k)==='1'}catch(e){}c.onchange=()=>{try{localStorage.setItem(k,c.checked?'1':'0')}catch(e){}}});
+</script></body></html>

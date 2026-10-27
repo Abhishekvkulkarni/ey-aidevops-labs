@@ -35,7 +35,7 @@ section>h2{margin:0 0 4px;font-size:21px}
 .sub{color:var(--muted);margin:0 0 12px;font-size:14px}
 h3{font-size:17px;margin:18px 0 6px}
 code{font-family:Consolas,"Cascadia Mono",Menlo,monospace;font-size:.92em;background:rgba(127,127,127,.16);padding:1px 5px;border-radius:4px}
-pre{font-family:Consolas,"Cascadia Mono",Menlo,monospace;font-size:14px;background:var(--code);color:var(--codeink);padding:12px 14px;border-radius:8px;overflow:auto;margin:8px 0;line-height:1.5}
+pre{font-family:Consolas,"Cascadia Mono",Menlo,monospace;font-size:14px;background:var(--code);color:var(--codeink);padding:12px 14px;border-radius:8px;overflow:auto;margin:8px 0;line-height:1.5;white-space:pre-wrap;word-break:break-word;padding-right:64px}
 pre code{background:none;padding:0;color:inherit}
 .cmdwrap{position:relative}
 .cmdwrap button.copy{position:absolute;top:6px;right:6px;font-size:12px;padding:3px 9px;border:1px solid #555;background:#2b2b35;color:#ddd;border-radius:5px;cursor:pointer}
@@ -107,6 +107,7 @@ footer{max-width:900px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font
       <p>1. Image tag is the <b>commit SHA</b>, not <code>latest</code>.<br>2. Secrets come from <b>GitHub secrets</b>, never from the file.<br>3. Every action has a <b>version tag</b>.</p>
     </div>
   </div>
+  <div class="note"><b>🤖 AI value in this block.</b> Copilot writes the whole pipeline from your spec in one pass, and explains why a run failed in seconds. It also invents things: versions, tags, names. So your skill is the <b>spec</b> and the <b>checks</b>: they make AI output safe to ship. You will see both sides today.</div>
   <div class="note"><b>Tests need testing too.</b> A suite can show high coverage and still let bugs through. The mutation check injects 6 known bugs and counts how many your tests catch.</div>
 </section>
 
@@ -114,54 +115,70 @@ footer{max-width:900px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font
   <h2>2. Guided lab <span class="badge">25 min · follow along</span></h2>
   <p class="sub">Goal: a green pipeline that deploys your API from GitHub to your namespace.</p>
 
-  <div class="step"><input type="checkbox" data-step="g1"><div class="body"><strong>[g1] [g1] Push your work to your fork and switch on Actions</strong>
+  <div class="step"><input type="checkbox" data-step="g1"><div class="body"><strong>[g1] 🖥️ TERMINAL: Sync and read the spec</strong><br>
+    Open a <b>new</b> terminal in <code>C:\EYLAB\ey-aidevops-labs</code> and bring in the trainer's files:
+    <pre class="cmd">.\sync.ps1</pre>
+    Then open <code>day1/labs/block2-pipeline/pipeline-spec.md</code>. Note requirements P2 (job names), P5 (tag) and P7 (secrets).</div></div>
+
+  <div class="step"><input type="checkbox" data-step="g2"><div class="body"><strong>[g2] 🖥️ TERMINAL, then 🌐 BROWSER: Push to your fork and switch on Actions</strong>
     <pre class="cmd">gh auth status
 git push origin main</pre>
-    Open your fork on GitHub, go to the <b>Actions</b> tab and press <b>I understand my workflows, go ahead and enable them</b> (new forks start with Actions off). Push only <code>main</code> today, never other branches. Your fork is public: never print a secret or the kubeconfig in a workflow step.</div></div>
+    In the browser, open your fork on GitHub, go to the <b>Actions</b> tab and press <b>I understand my workflows, go ahead and enable them</b> (new forks start with Actions off). Push only <code>main</code> today, never other branches. Your fork is public: never print a secret or the kubeconfig in a workflow step.</div></div>
 
-  <div class="step"><input type="checkbox" data-step="g2"><div class="body"><strong>[g2] [g2] Load the pipeline settings with the setup script</strong><br>
-    One script sets the GitHub variables and secrets the pipeline reads. You do not type any secret by hand.
+  <div class="step"><input type="checkbox" data-step="g3"><div class="body"><strong>[g3] 🖥️ TERMINAL: Load the pipeline settings with the setup script</strong><br>
+    One script sets the GitHub variables and secrets the pipeline reads. You do not type any secret by hand. It also checks your Block 1 chart and, if it does not work with the pipeline, saves yours and installs a working one.
     <pre class="cmd">.\day1\labs\block2-pipeline\setup-github.ps1</pre></div></div>
 
-  <div class="step"><input type="checkbox" data-step="g3"><div class="body"><strong>[g3] [g3] Read the pipeline spec</strong><br>
-    The trainer (Anil) has released the spec: run <code>.\sync.ps1</code>, then open <code>day1/labs/block2-pipeline/pipeline-spec.md</code>. Note requirements P2 (job names), P5 (tag) and P7 (secrets).</div></div>
-
-  <div class="step"><input type="checkbox" data-step="g4"><div class="body"><strong>[g4] [g4] Let AI write the workflow from the spec</strong><br>
+  <div class="step"><input type="checkbox" data-step="g4"><div class="body"><strong>[g4] 💬 COPILOT CHAT: 🤖 AI writes the pipeline from your spec</strong><br>
     In Copilot Chat, attach the spec file and send:
     <pre class="cmd">Create .github/workflows/ci.yml that satisfies every requirement in this spec. Use the exact job names. Do not hardcode any secret.</pre>
-    Read the file before you accept it. Check P2, P5 and P9 yourself.</div></div>
+    Read the file before you accept it. Check P2 (job names), P5 (SHA tag), P6 (image name) and P9 (version tags) yourself.</div></div>
 
-  <div class="step"><input type="checkbox" data-step="g5"><div class="body"><strong>[g5] [g5] Commit, push, watch</strong>
+  <div class="step"><input type="checkbox" data-step="g5"><div class="body"><strong>[g5] 🖥️ TERMINAL: Commit, push, watch</strong><br>
     The <code>test</code> job needs tests. This copies the ready-made test file if <code>api/tests</code> has none, then pushes:
     <pre class="cmd">New-Item -ItemType Directory -Force api\tests | Out-Null
 if (-not (Test-Path api\tests\test_*.py)) { Copy-Item day1\labs\block2-pipeline\ready_made_tests\test_api.py api\tests\ }
 git add -A
 git commit -m "add ci pipeline"
 git push
+Start-Sleep 8
 gh run watch</pre></div></div>
 
-  <div class="checkpoint">Checkpoint: everyone has a run started. Wait for the trainer (Anil). If your run is red, read the failing log first: <code>gh run view --log-failed</code>.</div>
+  <div class="checkpoint">Checkpoint: everyone has a run started. Wait for the trainer (Anil). If your run is red, get the failing lines (command in step s3) and ask Copilot why.</div>
 </section>
 
 <section id="solo">
   <h2>3. Solo challenge <span class="badge">30 min · you work alone</span></h2>
   <p class="sub">Get to a green run, prove your tests catch bugs, then add a gate that blocks.</p>
 
-  <div class="step"><input type="checkbox" data-step="s1"><div class="body"><strong>[s1] [s1] Get a green run and verify it</strong><br>
+  <div class="step"><input type="checkbox" data-step="s1"><div class="body"><strong>[s1] 🖥️ TERMINAL: Get a green run and verify it</strong><br>
     Use the <b>B1</b>, <b>B2</b> and <b>B3</b> boxes under <b>Paste and check</b>. If a check fails, fix the pipeline with Copilot, push, and check again.</div></div>
 
-  <div class="step"><input type="checkbox" data-step="s2"><div class="body"><strong>[s2] [s2] Run the mutation check once</strong><br>
+  <div class="step"><input type="checkbox" data-step="s2"><div class="body"><strong>[s2] 🖥️ TERMINAL: Run the mutation check once</strong><br>
     It runs against the tests in <code>api/tests</code> (the ready-made file was added in the guided lab if you had none).
+    First, once (installs pytest and the other lab packages):
+    <pre class="cmd">pip install -r lab-requirements.txt</pre>
+    Then run the check:
     <pre class="cmd">python day1/labs/block2-pipeline/mutation_check.py</pre>
     Paste the output into <b>B4</b>.</div></div>
 
-  <div class="step"><input type="checkbox" data-step="s3"><div class="body"><strong>[s3] [s3] Add a Trivy gate to the pipeline</strong><br>
-    Ask Copilot to add a step after <code>build</code> that scans the pushed image and fails on HIGH or CRITICAL findings.
-    Push it in a way that turns the run <b>red</b> once (for example tighten the severity or point the scan at a bad tag). Read the log, fix it, push again until the run is <b>green</b>.</div></div>
+  <div class="step"><input type="checkbox" data-step="s3"><div class="body"><strong>[s3] 💬 COPILOT CHAT + 🖥️ TERMINAL: Add a Trivy gate, then 🤖 let AI diagnose the failure</strong><br>
+    Ask Copilot to add a step after <code>build</code> that scans the pushed image with Trivy and fails on HIGH or CRITICAL findings. Push it (same commit, push and watch as g5).
+    <p><b>If the run goes red, let AI read the log.</b> Get the failing lines:</p>
+    <pre class="cmd">$id = gh run list --limit 1 --json databaseId -q ".[0].databaseId"
+gh run view $id --log-failed | Select-Object -Last 60</pre>
+    <p>Paste them into Copilot Chat with this question, then <b>judge its answer before you apply it</b>:</p>
+    <pre class="cmd">Why did this CI step fail? Give me the smallest fix.</pre>
+    <p>Push again until the run is <b>green</b>.</p>
+    <p><b>Stuck? Hints</b></p>
+    <ul>
+      <li>An action version must really exist. Check: <code>gh api repos/aquasecurity/trivy-action/releases/latest --jq .tag_name</code></li>
+      <li>Fail only on findings that have a fix: add <code>ignore-unfixed: true</code> under <code>with:</code> of the Trivy step.</li>
+      <li>If a Python package such as starlette is listed, upgrade it in <code>api/requirements.txt</code>: <code>fastapi==0.162.0</code>, <code>starlette==1.10.0</code>, <code>uvicorn==0.54.0</code>.</li>
+    </ul></div></div>
 
-  <div class="step"><input type="checkbox" data-step="s4"><div class="body"><strong>[s4] [s4] Show the red then green history</strong><br>Use the <b>Solo</b> box.</div></div>
+  <div class="step"><input type="checkbox" data-step="s4"><div class="body"><strong>[s4] 🌐 PAGE: Show the red then green history</strong><br>Use the <b>Solo</b> box.</div></div>
 
-  <div class="note"><b>Stretch:</b> raise the coverage gate from 80 to 90 (<code>--cov-fail-under=90</code>). Do your tests pass? Use <code>--cov-report=term-missing</code> to see which lines are not covered.</div>
 </section>
 
 <section id="check">
@@ -171,7 +188,7 @@ gh run watch</pre></div></div>
 </section>
 <section id="debrief">
 <h2>5. Debrief quiz <span class="badge">5 min</span></h2>
-<p class="sub">Three quick questions. Each answer comes with the reason.</p>
+<p class="sub">Four quick questions. Each answer comes with the reason.</p>
 <div id="quiz"></div>
 </section>
 <section id="result" class="summary">
@@ -311,6 +328,12 @@ function parseJson(t) {
       options: ['Alphabetical order', 'Cheap, fast checks fail early, so you do not spend build and deploy time on bad code', 'Deploy needs a faster runner', 'GitHub requires it'],
       answer: 1,
       why: 'Fail fast and cheap. Each stage is a gate that only passes known-good work to the next, more expensive stage.'
+    },
+    {
+      q: 'Copilot wrote a Trivy step with an action version that does not exist, and the run failed. What is the right habit?',
+      options: ['Stop using AI for pipelines', 'Keep the spec and the checks, and verify what AI writes (versions, tags, names)', 'Always use the latest tag so versions never fail', 'Ask AI to write the pipeline again until it works'],
+      answer: 1,
+      why: 'AI is fast but it invents details. A clear spec and checks (P9, B1 to B3) catch the mistakes, and AI can then help you read the failing log and fix it.'
     }
   ]
 };

@@ -1,0 +1,15 @@
+Recent runs of the 'test' job on main (oldest first)
+#207  success  feat: bulk import
+#208  success  docs: update readme
+#209  FAILURE  chore: bump action versions
+#210  success  fix: label typo
+#211  success  refactor: rename helper
+#212  success  test: add cases
+#213  success  docs: faq
+#214  FAILURE  chore: format
+#215  success  feat: bulk import
+#216  success  docs: update readme
+#217  success  chore: bump action versions
+#218  FAILURE  fix: label typo
+
+Re-running the failed jobs turned #208, #213 and #218 green without any code change. About 1 run in 4 fails.

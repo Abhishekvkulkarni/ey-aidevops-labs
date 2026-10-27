@@ -1,0 +1,31 @@
+commit 7be0c53  feat: tracking client   (the commit that triggered this run)
+
+diff --git a/app/client.py b/app/client.py
+new file mode 100644
+--- /dev/null
++++ b/app/client.py
+@@ -0,0 +1,8 @@
++"""Tiny client for the Shipwave tracking API."""
++import os
++
++BASE_URL = os.environ["SHIPWAVE_API_URL"]
++
++
++def tracking_url(ref):
++    return f"{BASE_URL.rstrip('/')}/shipments/{ref}"
+diff --git a/tests/test_client.py b/tests/test_client.py
+new file mode 100644
+--- /dev/null
++++ b/tests/test_client.py
+@@ -0,0 +1,9 @@
++from app.client import tracking_url
++
++
++def test_tracking_url_has_ref():
++    assert tracking_url("SW-1001").endswith("/shipments/SW-1001")
+diff --git a/.env.example b/.env.example
+new file mode 100644
+--- /dev/null
++++ b/.env.example
+@@ -0,0 +1 @@
++SHIPWAVE_API_URL=https://api.example.test

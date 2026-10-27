@@ -1,0 +1,229 @@
+2026-10-27T05:41:02.1190186Z Current runner version: '2.321.0'
+2026-10-27T05:41:02.1193650Z ##[group]Operating System
+2026-10-27T05:41:03.0186258Z Ubuntu
+2026-10-27T05:41:03.1161318Z 24.04.1
+2026-10-27T05:41:03.1175688Z LTS
+2026-10-27T05:41:03.8453055Z ##[endgroup]
+2026-10-27T05:41:03.8469127Z ##[group]Runner Image
+2026-10-27T05:41:04.5593377Z Image: ubuntu-24.04
+2026-10-27T05:41:04.7672429Z Version: 20261014.1.0
+2026-10-27T05:41:04.7710936Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261014.1/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-27T05:41:04.7749057Z ##[endgroup]
+2026-10-27T05:41:04.7752606Z ##[group]GITHUB_TOKEN Permissions
+2026-10-27T05:41:04.7755958Z Contents: read
+2026-10-27T05:41:04.7764985Z Metadata: read
+2026-10-27T05:41:04.7774738Z Packages: read
+2026-10-27T05:41:04.7812453Z ##[endgroup]
+2026-10-27T05:41:04.7824597Z Secret source: Actions
+2026-10-27T05:41:05.0978549Z Prepare workflow directory
+2026-10-27T05:41:05.1014745Z Prepare all required actions
+2026-10-27T05:41:05.1052031Z Getting action download info
+2026-10-27T05:41:05.4509444Z Download action repository 'actions/checkout@v4' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+2026-10-27T05:41:05.4544590Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-10-27T05:41:05.4565477Z Complete job name: test
+2026-10-27T05:41:05.4595476Z ##[group]Run actions/checkout@v4
+2026-10-27T05:41:05.4612056Z with:
+2026-10-27T05:41:05.4628353Z   repository: shipwave/ci-demo
+2026-10-27T05:41:05.9667697Z   token: ***
+2026-10-27T05:41:05.9690507Z   ssh-strict: true
+2026-10-27T05:41:05.9709677Z   persist-credentials: true
+2026-10-27T05:41:05.9714774Z   clean: true
+2026-10-27T05:41:06.6731710Z   fetch-depth: 1
+2026-10-27T05:41:07.2472454Z ##[endgroup]
+2026-10-27T05:41:08.0677893Z Syncing repository: shipwave/ci-demo
+2026-10-27T05:41:08.0683279Z ##[group]Getting Git version info
+2026-10-27T05:41:08.0721132Z Working directory is '/home/runner/work/ci-demo/ci-demo'
+2026-10-27T05:41:08.0741993Z [command]/usr/bin/git version
+2026-10-27T05:41:08.0765242Z git version 2.47.0
+2026-10-27T05:41:08.0803546Z ##[endgroup]
+2026-10-27T05:41:08.0808352Z [command]/usr/bin/git fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a41c9d7e3b8f52106c4d9e0a7b3f1c25d8e6a490:refs/remotes/origin/main
+2026-10-27T05:41:08.0826342Z From https://github.com/shipwave/ci-demo
+2026-10-27T05:41:08.0830901Z  * [new ref]         a41c9d7e3b8f52106c4d9e0a7b3f1c25d8e6a490 -> origin/main
+2026-10-27T05:41:08.6027250Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-27T05:41:08.6056755Z Switched to a new branch 'main'
+2026-10-27T05:41:08.6082338Z [command]/usr/bin/git log -1 --format='%H'
+2026-10-27T05:41:08.6105379Z 'a41c9d7e3b8f52106c4d9e0a7b3f1c25d8e6a490'
+2026-10-27T05:41:09.3853340Z ##[group]Run actions/setup-python@v5
+2026-10-27T05:41:09.3861313Z with:
+2026-10-27T05:41:09.3875913Z   python-version: 3.13
+2026-10-27T05:41:09.3884689Z   check-latest: false
+2026-10-27T05:41:09.3911065Z   token: ***
+2026-10-27T05:41:09.3943904Z   update-environment: true
+2026-10-27T05:41:10.1482018Z ##[endgroup]
+2026-10-27T05:41:10.1500526Z Installed versions
+2026-10-27T05:41:10.1529040Z   Successfully set up CPython (3.13.1)
+2026-10-27T05:41:10.1547586Z ##[group]Run python -m pip install --upgrade pip && pip install -r requirements.txt
+2026-10-27T05:41:10.1571398Z python -m pip install --upgrade pip && pip install -r requirements.txt
+2026-10-27T05:41:10.1596630Z shell: /usr/bin/bash -e {0}
+2026-10-27T05:41:10.1606820Z env:
+2026-10-27T05:41:10.4147185Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.1/x64
+2026-10-27T05:41:10.4162776Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.1/x64/lib
+2026-10-27T05:41:10.7223981Z ##[endgroup]
+2026-10-27T05:41:10.7224549Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.13.1/x64/lib/python3.13/site-packages (24.3.1)
+2026-10-27T05:41:11.6195497Z Collecting pip
+2026-10-27T05:41:11.6232912Z   Downloading pip-25.0-py3-none-any.whl.metadata (3.7 kB)
+2026-10-27T05:41:11.6241436Z Downloading pip-25.0-py3-none-any.whl (1.8 MB)
+2026-10-27T05:41:11.6275519Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 41.2 MB/s eta 0:00:00
+2026-10-27T05:41:11.6279357Z Installing collected packages: pip
+2026-10-27T05:41:11.6316309Z   Attempting uninstall: pip
+2026-10-27T05:41:11.6342756Z     Found existing installation: pip 24.3.1
+2026-10-27T05:41:11.6374613Z     Uninstalling pip-24.3.1:
+2026-10-27T05:41:11.6378992Z       Successfully uninstalled pip-24.3.1
+2026-10-27T05:41:11.6392973Z Successfully installed pip-25.0
+2026-10-27T05:41:11.6400477Z Collecting pytest
+2026-10-27T05:41:11.6404222Z   Downloading pytest-8.3.4-py3-none-any.whl.metadata (3.2 kB)
+2026-10-27T05:41:11.8944026Z Downloading pytest-8.3.4-py3-none-any.whl (1.4 MB)
+2026-10-27T05:41:11.8968155Z Collecting iniconfig
+2026-10-27T05:41:11.8973063Z   Downloading iniconfig-2.0.0-py3-none-any.whl.metadata (3.2 kB)
+2026-10-27T05:41:11.8998019Z Downloading iniconfig-2.0.0-py3-none-any.whl (5.9 kB)
+2026-10-27T05:41:12.3232201Z Collecting packaging
+2026-10-27T05:41:12.3271971Z   Downloading packaging-24.2-py3-none-any.whl.metadata (3.2 kB)
+2026-10-27T05:41:12.3280321Z Downloading packaging-24.2-py3-none-any.whl (65 kB)
+2026-10-27T05:41:13.1470744Z Collecting pluggy
+2026-10-27T05:41:13.1501583Z   Downloading pluggy-1.5.0-py3-none-any.whl.metadata (3.2 kB)
+2026-10-27T05:41:13.1522320Z Downloading pluggy-1.5.0-py3-none-any.whl (20 kB)
+2026-10-27T05:41:13.3238743Z Installing collected packages: pytest, iniconfig, packaging, pluggy
+2026-10-27T05:41:13.3256394Z Successfully installed pytest-8.3.4 iniconfig-2.0.0 packaging-24.2 pluggy-1.5.0
+2026-10-27T05:41:13.3267274Z ##[group]Run df -h && free -m && lscpu | head -20
+2026-10-27T05:41:13.3281022Z df -h && free -m && lscpu | head -20
+2026-10-27T05:41:13.3315941Z shell: /usr/bin/bash -e {0}
+2026-10-27T05:41:13.3351838Z ##[endgroup]
+2026-10-27T05:41:13.3386748Z Filesystem      Size  Used Avail Use% Mounted on
+2026-10-27T05:41:13.3393012Z /dev/root        72G   49G   23G  69% /
+2026-10-27T05:41:13.3410424Z tmpfs           7.9G   84K  7.9G   1% /dev/shm
+2026-10-27T05:41:13.3421671Z tmpfs           3.2G  1.1M  3.2G   1% /run
+2026-10-27T05:41:13.3436571Z tmpfs           5.0M     0  5.0M   0% /run/lock
+2026-10-27T05:41:13.3469815Z /dev/sda16      881M   62M  758M   8% /boot
+2026-10-27T05:41:13.3484732Z /dev/sda15      105M  6.1M   99M   6% /boot/efi
+2026-10-27T05:41:13.3497821Z /dev/sdb1        74G  4.1G   66G   6% /mnt
+2026-10-27T05:41:13.3524380Z tmpfs           1.6G   12K  1.6G   1% /run/user/1001
+2026-10-27T05:41:13.3539539Z                total        used        free      shared  buff/cache   available
+2026-10-27T05:41:13.3572133Z Mem:            15990        1102       11812          35        3075       14540
+2026-10-27T05:41:13.3574332Z Swap:            4095           0        4095
+2026-10-27T05:41:13.3592943Z Architecture:                         x86_64
+2026-10-27T05:41:13.3605933Z CPU op-mode(s):                       32-bit, 64-bit
+2026-10-27T05:41:13.3628795Z Address sizes:                        48 bits physical, 48 bits virtual
+2026-10-27T05:41:13.3652001Z Byte Order:                           Little Endian
+2026-10-27T05:41:13.3676197Z CPU(s):                               4
+2026-10-27T05:41:13.5392109Z On-line CPU(s) list:                  0-3
+2026-10-27T05:41:13.5405300Z Vendor ID:                            AuthenticAMD
+2026-10-27T05:41:13.5437231Z Model name:                           AMD EPYC 7763 64-Core Processor
+2026-10-27T05:41:13.5437656Z CPU family:                           25
+2026-10-27T05:41:13.5460500Z Model:                                1
+2026-10-27T05:41:13.5466356Z Thread(s) per core:                   2
+2026-10-27T05:41:13.5474514Z Core(s) per socket:                   2
+2026-10-27T05:41:13.5487876Z Socket(s):                            1
+2026-10-27T05:41:13.5499875Z Stepping:                             1
+2026-10-27T05:41:13.5521966Z BogoMIPS:                             4890.85
+2026-10-27T05:41:14.2165033Z Virtualization:                       AMD-V
+2026-10-27T05:41:14.2170898Z Hypervisor vendor:                    Microsoft
+2026-10-27T05:41:14.2182339Z Virtualization type:                  full
+2026-10-27T05:41:14.2184444Z ##[group]Run printenv | sort
+2026-10-27T05:41:14.9993786Z printenv | sort
+2026-10-27T05:41:15.0003665Z shell: /usr/bin/bash -e {0}
+2026-10-27T05:41:15.0043015Z ##[endgroup]
+2026-10-27T05:41:15.0066279Z ACTIONS_ID_TOKEN_REQUEST_TOKEN=***
+2026-10-27T05:41:15.2265823Z ACTIONS_ID_TOKEN_REQUEST_URL=https://pipelinesghubeus6.actions.githubusercontent.com/xK2/
+2026-10-27T05:41:15.3992051Z ACTIONS_RESULTS_URL=https://results-receiver.actions.githubusercontent.com/
+2026-10-27T05:41:15.4001476Z ACTIONS_RUNTIME_TOKEN=***
+2026-10-27T05:41:15.4014542Z ACTIONS_RUNTIME_URL=https://pipelinesghubeus6.actions.githubusercontent.com/xK2/
+2026-10-27T05:41:15.4028672Z AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
+2026-10-27T05:41:15.7600524Z ANDROID_HOME=/usr/local/lib/android/sdk
+2026-10-27T05:41:15.7616587Z ANT_HOME=/usr/share/ant
+2026-10-27T05:41:15.7638251Z CI=true
+2026-10-27T05:41:15.7666011Z DEBIAN_FRONTEND=noninteractive
+2026-10-27T05:41:15.7670302Z DOTNET_NOLOGO=1
+2026-10-27T05:41:15.7693787Z GITHUB_ACTION=__run_2
+2026-10-27T05:41:15.7732317Z GITHUB_ACTIONS=true
+2026-10-27T05:41:15.7766483Z GITHUB_ACTOR=meera-r
+2026-10-27T05:41:15.7799659Z GITHUB_BASE_REF=
+2026-10-27T05:41:16.0349050Z GITHUB_EVENT_NAME=push
+2026-10-27T05:41:16.0350575Z GITHUB_JOB=test
+2026-10-27T05:41:16.0362875Z GITHUB_REF=refs/heads/main
+2026-10-27T05:41:16.0372992Z GITHUB_REF_NAME=main
+2026-10-27T05:41:16.8318885Z GITHUB_REPOSITORY=shipwave/ci-demo
+2026-10-27T05:41:16.8327071Z GITHUB_RUN_ATTEMPT=1
+2026-10-27T05:41:16.8348734Z GITHUB_RUN_ID=11240987331
+2026-10-27T05:41:16.8383815Z GITHUB_RUN_NUMBER=218
+2026-10-27T05:41:16.8391068Z GITHUB_SERVER_URL=https://github.com
+2026-10-27T05:41:16.8395091Z GITHUB_WORKFLOW=ci
+2026-10-27T05:41:16.8413539Z GITHUB_WORKSPACE=/home/runner/work/ci-demo/ci-demo
+2026-10-27T05:41:17.0055432Z HOME=/home/runner
+2026-10-27T05:41:17.0092545Z ImageOS=ubuntu24
+2026-10-27T05:41:17.1157697Z JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
+2026-10-27T05:41:17.1191128Z LANG=C.UTF-8
+2026-10-27T05:41:17.1204496Z PATH=/opt/hostedtoolcache/Python/3.13.1/x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+2026-10-27T05:41:17.1234440Z PIPX_HOME=/opt/pipx
+2026-10-27T05:41:17.1266068Z PWD=/home/runner/work/ci-demo/ci-demo
+2026-10-27T05:41:17.1282598Z PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
+2026-10-27T05:41:17.1299910Z RUNNER_ARCH=X64
+2026-10-27T05:41:17.1313486Z RUNNER_OS=Linux
+2026-10-27T05:41:17.1322773Z RUNNER_TEMP=/home/runner/work/_temp
+2026-10-27T05:41:17.1348786Z RUNNER_TOOL_CACHE=/opt/hostedtoolcache
+2026-10-27T05:41:17.1353840Z SELENIUM_JAR_PATH=/usr/share/java/selenium-server.jar
+2026-10-27T05:41:17.1382211Z USER=runner
+2026-10-27T05:41:17.6464017Z ##[group]Run pip list
+2026-10-27T05:41:17.6474438Z pip list
+2026-10-27T05:41:17.6498736Z shell: /usr/bin/bash -e {0}
+2026-10-27T05:41:17.8803486Z ##[endgroup]
+2026-10-27T05:41:17.8818176Z Package    Version
+2026-10-27T05:41:17.8824644Z ---------- -------
+2026-10-27T05:41:17.8856877Z iniconfig  2.0.0
+2026-10-27T05:41:18.2612144Z packaging  24.2
+2026-10-27T05:41:18.9853878Z pip        25.0
+2026-10-27T05:41:18.9880642Z pluggy     1.5.0
+2026-10-27T05:41:18.9893770Z pytest     8.3.4
+2026-10-27T05:41:18.9918053Z ##[group]Run python -m pytest -v
+2026-10-27T05:41:19.7615271Z python -m pytest -v
+2026-10-27T05:41:19.7616756Z shell: /usr/bin/bash -e {0}
+2026-10-27T05:41:19.7650966Z env:
+2026-10-27T05:41:19.7684837Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.1/x64
+2026-10-27T05:41:19.7692532Z ##[endgroup]
+2026-10-27T05:41:19.7707810Z ============================= test session starts ==============================
+2026-10-27T05:41:19.7714976Z platform linux -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0 -- /opt/hostedtoolcache/Python/3.13.1/x64/bin/python
+2026-10-27T05:41:20.2279044Z rootdir: /home/runner/work/shipwave-ci/shipwave-ci
+2026-10-27T05:41:20.5326970Z collecting ... collected 8 items
+2026-10-27T05:41:20.5335760Z 
+2026-10-27T05:41:20.5353008Z tests/test_legacy.py::test_stamp_is_text PASSED                          [ 12%]
+2026-10-27T05:41:20.5388474Z tests/test_legacy.py::test_stamp_many_len PASSED                         [ 25%]
+2026-10-27T05:41:20.5426168Z tests/test_parser.py::test_parse_one_line PASSED                         [ 37%]
+2026-10-27T05:41:20.5447901Z tests/test_parser.py::test_parse_many_lines PASSED                       [ 50%]
+2026-10-27T05:41:20.6415035Z tests/test_parser.py::test_parse_strips_newlines PASSED                  [ 62%]
+2026-10-27T05:41:20.6427350Z tests/test_sla.py::test_early_is_not_late PASSED                         [ 75%]
+2026-10-27T05:41:20.6432395Z tests/test_sla.py::test_after_promise_is_late PASSED                     [ 87%]
+2026-10-27T05:41:20.6433798Z tests/test_sla.py::test_on_time_when_delivered_at_promise FAILED         [100%]
+2026-10-27T05:41:20.6451173Z 
+2026-10-27T05:41:21.0184559Z =================================== FAILURES ===================================
+2026-10-27T05:41:21.2227969Z ____________________ test_on_time_when_delivered_at_promise ____________________
+2026-10-27T05:41:21.2250495Z 
+2026-10-27T05:41:21.2278173Z     def test_on_time_when_delivered_at_promise():
+2026-10-27T05:41:21.2296027Z >       assert is_late(PROMISED, PROMISED) is False
+2026-10-27T05:41:21.2299158Z E       assert True is False
+2026-10-27T05:41:21.2315084Z E        +  where True = is_late(datetime.datetime(2026, 10, 26, 18, 0), datetime.datetime(2026, 10, 26, 18, 0))
+2026-10-27T05:41:21.2325964Z 
+2026-10-27T05:41:21.2338135Z tests/test_sla.py:17: AssertionError
+2026-10-27T05:41:21.2358881Z =============================== warnings summary ===============================
+2026-10-27T05:41:21.2393986Z tests/test_legacy.py::test_stamp_is_text
+2026-10-27T05:41:21.2413288Z   /home/runner/work/shipwave-ci/shipwave-ci/app/legacy.py:6: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+2026-10-27T05:41:21.2425246Z     return datetime.utcnow().isoformat()
+2026-10-27T05:41:21.2426736Z 
+2026-10-27T05:41:21.2429457Z tests/test_legacy.py::test_stamp_many_len
+2026-10-27T05:41:22.0914923Z tests/test_legacy.py::test_stamp_many_len
+2026-10-27T05:41:22.0927639Z tests/test_legacy.py::test_stamp_many_len
+2026-10-27T05:41:22.0944039Z tests/test_legacy.py::test_stamp_many_len
+2026-10-27T05:41:22.0951304Z tests/test_legacy.py::test_stamp_many_len
+2026-10-27T05:41:22.0979927Z   /home/runner/work/shipwave-ci/shipwave-ci/app/legacy.py:10: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+2026-10-27T05:41:22.1016003Z     return [datetime.utcnow().isoformat() for _ in range(n)]
+2026-10-27T05:41:22.1042064Z 
+2026-10-27T05:41:22.1062534Z -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+2026-10-27T05:41:22.1077878Z =========================== short test summary info ============================
+2026-10-27T05:41:22.1087334Z FAILED tests/test_sla.py::test_on_time_when_delivered_at_promise - assert Tru...
+2026-10-27T05:41:22.1110411Z =================== 1 failed, 7 passed, 6 warnings in 0.13s ====================
+2026-10-27T05:41:22.1119218Z ##[error]Process completed with exit code 1.
+2026-10-27T05:41:22.5409371Z Post job cleanup.
+2026-10-27T05:41:22.5413301Z [command]/usr/bin/git version
+2026-10-27T05:41:23.1805436Z git version 2.47.0
+2026-10-27T05:41:23.1824212Z Temporarily overriding HOME='/home/runner/work/_temp/3f1d' before making global git config changes
+2026-10-27T05:41:23.1843717Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-27T05:41:23.4955408Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-27T05:41:24.2437103Z Cleaning up orphan processes
