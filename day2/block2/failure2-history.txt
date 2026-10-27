@@ -1,0 +1,10 @@
+Recent runs of the 'test' job on main (oldest first)
+#212  success  feat: bulk import
+#213  success  docs: update readme
+#214  success  chore: bump action versions
+#215  success  fix: label typo
+#216  success  refactor: rename helper
+#217  success  test: add cases
+#218  FAILURE  docs: faq
+
+This is the first run after app/client.py was added. All earlier runs were green.

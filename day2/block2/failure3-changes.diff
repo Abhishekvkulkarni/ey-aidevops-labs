@@ -1,0 +1,12 @@
+commit c88d1f0  docs: faq   (the commit that triggered this run)
+
+diff --git a/docs/faq.md b/docs/faq.md
+index 4a1b2c3..6d7e8f9 100644
+--- a/docs/faq.md
++++ b/docs/faq.md
+@@ -12,3 +12,6 @@
+ ## How long do entries stay in the cache?
+ They live for the TTL you pass in, then expire.
++
++## Can I turn the cache off?
++Pass a TTL of 0.
