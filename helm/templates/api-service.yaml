@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: shipwave-api
 spec:
-  type: {{ .Values.api.service.type }}
+  type: {{ .Values.service.type }}
   selector:
     app: shipwave-api
   ports:
-    - port: {{ .Values.api.service.port }}
-      targetPort: {{ .Values.api.service.targetPort }}
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
       name: http
