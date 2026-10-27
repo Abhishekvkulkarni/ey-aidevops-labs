@@ -64,7 +64,7 @@ jobs:
         run: docker push ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.NAMESPACE }}/shipwave-api:${{ github.sha }}
 
       - name: Scan image with Trivy
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.NAMESPACE }}/shipwave-api:${{ github.sha }}
           severity: HIGH,CRITICAL
