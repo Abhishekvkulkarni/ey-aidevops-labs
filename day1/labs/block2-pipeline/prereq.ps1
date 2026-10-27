@@ -20,12 +20,11 @@ if ($mine.Count -gt 0) {
 } else {
     Copy-Item .\day1\labs\block2-pipeline\prereq\api.yaml .\helm\templates\api.yaml
     Write-Host 'Added helm\templates\api.yaml' -ForegroundColor Green
-}
-
-# 3. image values (the pipeline overrides the tag with the commit SHA)
-if (-not (Select-String -Path .\helm\values.yaml -Pattern '^image:' -Quiet)) {
-    Add-Content -Path .\helm\values.yaml -Value "`nimage:`n  repository: $env:ACR_LOGIN_SERVER/$env:NAMESPACE/shipwave-api`n  tag: initial"
-    Write-Host 'Added image values to helm\values.yaml' -ForegroundColor Green
+    # image values for our chart (the pipeline overrides the tag with the commit SHA)
+    if (-not (Select-String -Path .\helm\values.yaml -Pattern '^image:' -Quiet)) {
+        Add-Content -Path .\helm\values.yaml -Value "`nimage:`n  repository: $env:ACR_LOGIN_SERVER/$env:NAMESPACE/shipwave-api`n  tag: initial"
+        Write-Host 'Added image values to helm\values.yaml' -ForegroundColor Green
+    }
 }
 
 # 4. check the chart
