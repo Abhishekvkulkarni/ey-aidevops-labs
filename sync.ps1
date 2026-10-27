@@ -53,4 +53,5 @@ if (Test-Path $vals) {
 $days = Get-ChildItem -Directory -Filter 'day*' | Where-Object { Test-Path (Join-Path $_.FullName 'content\index.html') } | ForEach-Object Name
 Write-Host "`nSynced. Open in VS Code:  C:\EYLAB\ey-aidevops-labs   (always the repo ROOT, never a sub-folder)" -ForegroundColor Green
 Write-Host "Pages available: $($days -join ', ')   (open dayN\content\index.html)"
-Write-Host "Next: open a NEW terminal, then run  .\preflight.ps1"
+Write-Host "`nChecking your machine (Day 2)..." -ForegroundColor Cyan
+& (Join-Path $here 'preflight.ps1') -Day 2

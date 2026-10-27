@@ -1,0 +1,216 @@
+Shipwave API: commits between v2.3.0 and v2.4.0
+
+=== commit 3a9f1c2 | 2026-10-12 | meera
+feat: bulk shipment import from CSV
+Adds POST /shipments/import. Accepts up to 500 rows per file.
+files: api/routes/import_.py, api/app.py, tests/test_import.py
+--- a/api/app.py
++++ b/api/app.py
+@@ -14,3 +14,4 @@ app.include_router(shipments.router)
+ app.include_router(tracking.router)
++app.include_router(import_.router)
+--- /dev/null
++++ b/api/routes/import_.py
+@@ -0,0 +1,18 @@
++MAX_ROWS = 500
++
++@router.post("/shipments/import")
++def import_shipments(file: UploadFile):
++    rows = list(csv.DictReader(io.TextIOWrapper(file.file)))
++    if len(rows) > MAX_ROWS:
++        raise HTTPException(413, "too many rows (max 500)")
++    return {"imported": create_many(rows)}
+
+=== commit b84e07d | 2026-10-12 | ravi
+fix: tracking page showed the wrong time zone for IST customers
+Timestamps were rendered in UTC. They now use the customer's profile time zone.
+files: web/tracking.js
+--- a/web/tracking.js
++++ b/web/tracking.js
+@@ -41,7 +41,7 @@ function fmt(ts) {
+-  return new Date(ts).toISOString().replace("T", " ").slice(0, 16)
++  return new Date(ts).toLocaleString("en-IN", { timeZone: profile.tz })
+ }
+
+=== commit c19d5ea | 2026-10-13 | dev-ops-bot
+chore(ci): cache pip dependencies in workflow
+
+files: .github/workflows/ci.yml
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -18,3 +18,4 @@ jobs:
+         with:
+           python-version: "3.13"
++          cache: pip
+
+=== commit e47a0b8 | 2026-10-13 | meera
+refactor: split rates module into smaller functions
+No behaviour change.
+files: api/rates.py
+--- a/api/rates.py
++++ b/api/rates.py
+@@ -30,12 +30,18 @@ def quote(weight, zone, service):
+-    total = base(weight) * ZONES[zone] * SERVICES[service]
+-    return round(total, 2)
++    total = _zone_adjusted(base(weight), zone, service)
++    return round(total, 2)
++
++def _zone_adjusted(amount, zone, service):
++    return amount * ZONES[zone] * SERVICES[service]
+
+=== commit 7d2c9f4 | 2026-10-14 | ravi
+feat!: rename eta to estimated_delivery in shipment responses
+BREAKING CHANGE: GET /shipments/{id} and GET /shipments now return `estimated_delivery` instead of `eta`.
+files: api/schemas.py, api/serializers.py, tests/test_shipments.py
+--- a/api/schemas.py
++++ b/api/schemas.py
+@@ -12,7 +12,7 @@ class ShipmentOut(BaseModel):
+     status: str
+-    eta: datetime | None
++    estimated_delivery: datetime | None
+--- a/api/serializers.py
++++ b/api/serializers.py
+@@ -9,4 +9,4 @@ def to_out(s):
+-    return ShipmentOut(id=s.id, status=s.status, eta=s.eta, weight_lb=s.weight_lb)
++    return ShipmentOut(id=s.id, status=s.status, estimated_delivery=s.eta, weight_lb=s.weight_lb)
+
+=== commit 0f6b3a9 | 2026-10-14 | arjun
+fix: typo in config default
+
+files: api/config.py
+--- a/api/config.py
++++ b/api/config.py
+@@ -6,7 +6,7 @@ class Settings:
+     API_KEY_HEADER = "X-API-Key"
+-    SESSION_TIMEOUT_MINUTES = 30
++    SESSION_TIMEOUT_MINUTES = 3
+     MAX_PAGE_SIZE = 100
+
+=== commit 91ce3d8 | 2026-10-15 | meera
+docs: update README badges
+
+files: README.md
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,3 @@
+-![build](https://ci.example/badge.svg)
++![build](https://ci.example/badge.svg?branch=main)
+
+=== commit 5ab2e61 | 2026-10-15 | ravi
+feat: webhook retries with exponential backoff
+Failed webhook deliveries are retried up to 5 times (1s, 2s, 4s, 8s, 16s) before being marked failed.
+files: api/webhooks.py, tests/test_webhooks.py
+--- a/api/webhooks.py
++++ b/api/webhooks.py
+@@ -22,8 +22,14 @@ def deliver(hook, payload):
+-    resp = requests.post(hook.url, json=payload, timeout=5)
+-    return resp.ok
++    for attempt in range(5):
++        resp = requests.post(hook.url, json=payload, timeout=5)
++        if resp.ok:
++            return True
++        time.sleep(2 ** attempt)
++    return False
+
+=== commit d03f7a8 | 2026-10-16 | arjun
+fix: fuel surcharge now rounds half up
+A surcharge of exactly half a paisa was rounded down. It now rounds up, as the rate card says.
+files: api/rates.py, tests/test_rates.py
+--- a/api/rates.py
++++ b/api/rates.py
+@@ -48,4 +48,4 @@ def fuel_surcharge(amount):
+-    return round(amount * Decimal("0.08"), 2)
++    return (amount * Decimal("0.08")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+=== commit 2c8e4b5 | 2026-10-17 | dev-ops-bot
+build(deps): bump cryptography from 42.0.5 to 43.0.1
+Fixes CVE-2026-1234 (denial of service when parsing malformed certificates).
+files: requirements.txt
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -4,5 +4,5 @@ fastapi==0.162.0
+-cryptography==42.0.5
++cryptography==43.0.1
+ uvicorn==0.54.0
+
+=== commit 6e1d9c0 | 2026-10-19 | meera
+feat: store carrier reference on shipments
+
+files: api/models.py, migrations/versions/0007_add_carrier_ref.py
+--- a/api/models.py
++++ b/api/models.py
+@@ -11,3 +11,4 @@ class Shipment(Base):
+     status = Column(String, nullable=False)
++    carrier_ref = Column(String, nullable=False, server_default="")
+--- /dev/null
++++ b/migrations/versions/0007_add_carrier_ref.py
+@@ -0,0 +1,9 @@
++"""add carrier_ref to shipments"""
++revision = "0007"
++down_revision = "0006"
++
++def upgrade():
++    op.add_column("shipments", sa.Column("carrier_ref", sa.String(), nullable=False, server_default=""))
++
++def downgrade():
++    op.drop_column("shipments", "carrier_ref")
+
+=== commit a8f23b1 | 2026-10-19 | ravi
+feat: add X-Request-Id header to every API response
+The id is also written to the access log, so support can find a request from the id a customer reports.
+files: api/middleware.py
+--- a/api/middleware.py
++++ b/api/middleware.py
+@@ -5,3 +5,6 @@ async def add_headers(request, call_next):
+     response = await call_next(request)
++    rid = request.headers.get("X-Request-Id") or uuid4().hex
++    response.headers["X-Request-Id"] = rid
++    log.info("request_id=%s path=%s", rid, request.url.path)
+     return response
+
+=== commit 4be0c7d | 2026-10-20 | arjun
+test: add regression tests for pagination
+
+files: tests/test_pagination.py
+--- /dev/null
++++ b/tests/test_pagination.py
+@@ -0,0 +1,8 @@
++def test_page_one_is_first_items(client):
++    ...
+
+=== commit 8c5d1e2 | 2026-10-21 | ravi
+feat: export shipments as PDF
+
+files: api/routes/export_pdf.py
+--- /dev/null
++++ b/api/routes/export_pdf.py
+@@ -0,0 +1,6 @@
++@router.get("/shipments/export.pdf")
++def export_pdf():
++    ...
+
+=== commit 1fa7b33 | 2026-10-21 | ravi
+Revert "feat: export shipments as PDF"
+This reverts commit 8c5d1e2. The PDF library fails on large exports; shipping it in a later release.
+files: api/routes/export_pdf.py
+--- a/api/routes/export_pdf.py
++++ /dev/null
+@@ -1,6 +0,0 @@
+-@router.get("/shipments/export.pdf")
+-def export_pdf():
+-    ...
+
+=== commit d92a6c4 | 2026-10-22 | arjun
+chore: remove unused field from shipment response
+Cleanup.
+files: api/schemas.py, api/serializers.py
+--- a/api/schemas.py
++++ b/api/schemas.py
+@@ -12,7 +12,6 @@ class ShipmentOut(BaseModel):
+     estimated_delivery: datetime | None
+-    weight_lb: float | None
+--- a/api/serializers.py
++++ b/api/serializers.py
+@@ -9,4 +9,4 @@ def to_out(s):
+-    return ShipmentOut(id=s.id, status=s.status, estimated_delivery=s.eta, weight_lb=s.weight_lb)
++    return ShipmentOut(id=s.id, status=s.status, estimated_delivery=s.eta)
